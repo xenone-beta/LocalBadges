@@ -20,9 +20,9 @@ __icon__ = "localbadges/0"
 __min_version__ = "12.1.1"
 
 
-GITHUB_RAW_URL = "https://raw.githubusercontent.com/LocalBadges/LocalBadges/main/LocalBadges.plugin"
-GITHUB_META_URL = "https://raw.githubusercontent.com/LocalBadges/LocalBadges/main/version.json"
-SUPPORTERS_URL = "https://raw.githubusercontent.com/LocalBadges/LocalBadges/main/supporters.json"
+GITHUB_RAW_URL = "https://raw.githubusercontent.com/xenone-beta/LocalBadges/refs/heads/main/LocalBadges.plugin"
+GITHUB_META_URL = "https://raw.githubusercontent.com/xenone-beta/LocalBadges/refs/heads/main/version.json"
+SUPPORTERS_URL = "https://raw.githubusercontent.com/xenone-beta/LocalBadges/refs/heads/main/supporters.json"
 SUPPORT_BOT_URL = "https://t.me/BadgesPayBot"
 SUPPORTERS_MAX_BYTES = 262144
 SUPPORTERS_MAX_ITEMS = 5000
