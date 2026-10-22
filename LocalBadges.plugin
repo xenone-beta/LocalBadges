@@ -1,0 +1,2658 @@
+import re
+import threading
+import time
+from typing import Any, List
+
+from base_plugin import BasePlugin, MethodHook, MenuItemData, MenuItemType
+from hook_utils import find_class
+from client_utils import get_user_config, get_last_fragment
+from android_utils import run_on_ui_thread, log
+from ui.settings import Text
+from ui.bulletin import BulletinHelper
+from ui.alert import AlertDialogBuilder
+
+__id__ = "LocalBadges"
+__name__ = "LocalBadges"
+__description__ = "Локальные бейджи, scam бейдж, бейдж для тех кто поддержал разработку LocalBadges и другие Бейджи для официальных лиц"
+__author__ = "@HysteriaPlugins"
+__version__ = "0.1.51"
+__icon__ = "localbadges/0"
+__min_version__ = "12.1.1"
+
+
+GITHUB_RAW_URL = "https://raw.githubusercontent.com/LocalBadges/LocalBadges/main/LocalBadges.plugin"
+GITHUB_META_URL = "https://raw.githubusercontent.com/LocalBadges/LocalBadges/main/version.json"
+SUPPORTERS_URL = "https://raw.githubusercontent.com/LocalBadges/LocalBadges/main/supporters.json"
+SUPPORT_BOT_URL = "https://t.me/BadgesPayBot"
+SUPPORTERS_MAX_BYTES = 262144
+SUPPORTERS_MAX_ITEMS = 5000
+SUPPORTERS_REFRESH_SEC = 3600
+
+ICON_MAJOR = 5336925683404802763
+ICON_HOLD = 5373168584543475852
+
+
+SPACE_USER = "u"
+SPACE_CHAT = "c"
+
+
+BUILTIN_BADGES = [
+    {
+        "kind": "id",
+        "space": "c",
+        "value": "2803087455",
+        "type": "custom",
+        "custom_emoji_id": "5429588718052740528",
+        "description": "Официальный канал HysteriaPlugins"
+    },
+    {
+        "kind": "id",
+        "space": "u",
+        "value": "5074845818",
+        "type": "custom",
+        "custom_emoji_id": "5444965061749644170",
+        "description": "Разработчик LocalBadges"
+    },
+    {
+        "kind": "id",
+        "space": "u",
+        "value": "8231820723",
+        "type": "custom",
+        "custom_emoji_id": "5246863809800318186",
+        "description": "Официальный бот HysteriaPlugins"
+    },
+    {
+        "kind": "id",
+        "space": "u",
+        "value": "8635704860",
+        "type": "custom",
+        "custom_emoji_id": "5247213725080890199",
+        "description": "Пользователь предоставил идею для обновления v0.1.4"
+    },
+    {
+        "kind": "id",
+        "space": "u",
+        "value": "8891099323",
+        "type": "custom",
+        "custom_emoji_id": "5240131869470661067",
+        "description": "Официальный бот оплаты бейджей"
+    }
+]
+
+
+SUPPORTERS = [
+    "8775591454",
+]
+
+
+SUPPORTER_BADGE = {
+    "kind": "id",
+    "space": "u",
+    "type": "custom",
+    "custom_emoji_id": "5240069270322322270",
+    "description": "Поддержал разработку LocalBadges и получил значок"
+}
+
+
+SCAMMERS = [
+    "7034519417",
+]
+
+
+SCAMMER_BADGE = {
+    "kind": "id",
+    "space": "u",
+    "type": "custom",
+    "custom_emoji_id": "5877488510637706502",
+    "description": "На данного пользователя часто поступали жалобы, в связи с чем он получил пометку Scam"
+}
+
+TYPE_LABELS = {
+    "major": "Major",
+    "hold": "Hold",
+    "sparkle": "Галочка",
+    "custom": "Эмодзи",
+}
+TYPE_LETTERS = {"major": "M", "hold": "H", "sparkle": "V", "custom": "E"}
+
+
+SUBTYPES = {
+    "user": ("Пользователь", "верифицирован", SPACE_USER),
+    "bot": ("Бот", "верифицирован", SPACE_USER),
+    "channel": ("Канал", "верифицирован", SPACE_CHAT),
+    "group": ("Группа", "верифицирована", SPACE_CHAT),
+}
+
+_MISSING = object()
+
+
+def _verify_text(subtype, org=None):
+    noun, verb, _ = SUBTYPES.get(subtype, SUBTYPES["user"])
+    if org:
+        return "%s %s организацией «%s»" % (noun, verb, org)
+    return "%s %s" % (noun, verb)
+
+
+def _icon_for(vtype, custom_id):
+    if custom_id:
+        try:
+            return int(custom_id)
+        except Exception:
+            pass
+    return ICON_MAJOR if vtype == "major" else ICON_HOLD
+
+
+def _ver_tuple(value):
+    try:
+        return tuple(int(x) for x in re.findall(r"\d+", str(value)))
+    except Exception:
+        return (0,)
+
+
+try:
+    from java import dynamic_proxy, jlong, jarray, jfloat, jclass
+    from android.view import View as _View, Gravity as _Gravity
+    from android.widget import (LinearLayout as _LL, FrameLayout as _FL, ScrollView as _SV,
+                                TextView as _TV, EditText as _ET, HorizontalScrollView as _HSV)
+    from android.graphics import Typeface as _Typeface
+    from android.graphics.drawable import (GradientDrawable as _GD, RippleDrawable as _RD,
+                                           ColorDrawable as _CD, LayerDrawable as _LayerD, Drawable as _Drawable)
+    from android.content.res import ColorStateList as _CSL
+    from android.text import InputType as _InputType
+
+    class _Click(dynamic_proxy(_View.OnClickListener)):
+        def __init__(self, fn):
+            super().__init__()
+            self.fn = fn
+
+        def onClick(self, v):
+            try:
+                self.fn(v)
+            except Exception as e:
+                try:
+                    log("[LocalBadges] click error: {}".format(e))
+                except Exception:
+                    pass
+
+    class _Focus(dynamic_proxy(_View.OnFocusChangeListener)):
+        def __init__(self, fn):
+            super().__init__()
+            self.fn = fn
+
+        def onFocusChange(self, v, has_focus):
+            try:
+                if not has_focus:
+                    self.fn(v)
+            except Exception as e:
+                log("[LocalBadges] focus error: {}".format(e))
+
+    class _Watcher(dynamic_proxy(jclass("android.text.TextWatcher"))):
+        def __init__(self, fn):
+            super().__init__()
+            self.fn = fn
+
+        def beforeTextChanged(self, s, a, b, c):
+            pass
+
+        def onTextChanged(self, s, a, b, c):
+            pass
+
+        def afterTextChanged(self, s):
+            try:
+                self.fn(str(s))
+            except Exception:
+                pass
+
+    class _Dismiss(dynamic_proxy(jclass("android.content.DialogInterface$OnDismissListener"))):
+        def __init__(self, fn):
+            super().__init__()
+            self.fn = fn
+
+        def onDismiss(self, dialog):
+            try:
+                self.fn()
+            except Exception:
+                pass
+
+    class _Run(dynamic_proxy(jclass("java.lang.Runnable"))):
+        def __init__(self, fn):
+            super().__init__()
+            self.fn = fn
+
+        def run(self):
+            try:
+                self.fn()
+            except Exception:
+                pass
+
+    _UI_OK = True
+except Exception:
+    _UI_OK = False
+    _Click = None
+
+    def jlong(x):
+        return int(x)
+
+_DENSITY = [None]
+
+
+_M3_DARK = {
+    "primary": 0xFFD0BCFF, "on_primary": 0xFF381E72,
+    "primary_container": 0xFF4F378B, "on_primary_container": 0xFFEADDFF,
+    "secondary_container": 0xFF4A4458, "on_secondary_container": 0xFFE8DEF8,
+    "error": 0xFFF2B8B5,
+    "surface": 0xFF141218, "surface_container": 0xFF211F26,
+    "surface_container_high": 0xFF2B2930, "surface_container_highest": 0xFF36343B,
+    "on_surface": 0xFFE6E1E5, "on_surface_variant": 0xFFCAC4D0,
+    "outline": 0xFF938F99, "outline_variant": 0xFF49454F,
+}
+_M3_LIGHT = {
+    "primary": 0xFF6750A4, "on_primary": 0xFFFFFFFF,
+    "primary_container": 0xFFEADDFF, "on_primary_container": 0xFF21005D,
+    "secondary_container": 0xFFE8DEF8, "on_secondary_container": 0xFF1D192B,
+    "error": 0xFFB3261E,
+    "surface": 0xFFFEF7FF, "surface_container": 0xFFF3EDF7,
+    "surface_container_high": 0xFFECE6F0, "surface_container_highest": 0xFFE6E0E9,
+    "on_surface": 0xFF1D1B20, "on_surface_variant": 0xFF49454F,
+    "outline": 0xFF79747E, "outline_variant": 0xFFCAC4D0,
+}
+
+
+def _signed(v):
+    v &= 0xFFFFFFFF
+    return v - 0x100000000 if v >= 0x80000000 else v
+
+
+def _palette():
+    dark = True
+    try:
+        from org.telegram.ui.ActionBar import Theme
+        dark = bool(Theme.isCurrentThemeDark())
+    except Exception:
+        pass
+    src = _M3_DARK if dark else _M3_LIGHT
+    return {k: _signed(v) for k, v in src.items()}
+
+
+def _dp(v):
+    if _DENSITY[0] is None:
+        try:
+            from org.telegram.messenger import AndroidUtilities
+            _DENSITY[0] = float(AndroidUtilities.density)
+        except Exception:
+            _DENSITY[0] = 2.75
+    return int(-(-(_DENSITY[0] * float(v)) // 1))
+
+
+def _lp(w=-2, h=-2, wt=None, m=(0, 0, 0, 0)):
+    p = _LL.LayoutParams(w, h) if wt is None else _LL.LayoutParams(w, h, float(wt))
+    p.setMargins(_dp(m[0]), _dp(m[1]), _dp(m[2]), _dp(m[3]))
+    return p
+
+
+def _rounded(color, radius_dp, radii=None):
+    g = _GD()
+    g.setColor(color)
+    if radii is not None:
+        g.setCornerRadii(jarray(jfloat)([float(_dp(x)) for x in radii]))
+    else:
+        g.setCornerRadius(float(_dp(radius_dp)))
+    return g
+
+
+def _ripple(color, radius_dp, tint):
+    content = _rounded(color, radius_dp)
+    try:
+        mask = _GD()
+        mask.setColor(_signed(0xFFFFFFFF))
+        mask.setCornerRadius(float(_dp(radius_dp)))
+        return _RD(_CSL.valueOf(_signed((tint & 0x00FFFFFF) | 0x33000000)), content, mask)
+    except Exception:
+        return content
+
+
+def _set_bg(view, drawable):
+    l, t, r, b = view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight(), view.getPaddingBottom()
+    view.setBackground(drawable)
+    view.setPadding(l, t, r, b)
+
+
+class UnifiedPlugin(BasePlugin):
+    def __init__(self):
+        super().__init__()
+        self._hooks = []
+        self._tl_bots = None
+        self._badges = []
+        self._ids = {SPACE_USER: set(), SPACE_CHAT: set()}
+        self._pids = {SPACE_USER: set(), SPACE_CHAT: set()}
+        self._sup_list = []
+        self._sup_since = {}
+        self._custom_view = {}
+        self._timed_active = {}
+        self._sup_active = frozenset()
+        self._sup_busy = False
+        self._ui_ident = None
+        self._acct_ts = 0.0
+        self._history = []
+        self._mgr_q = ""
+        self._mgr_f = "all"
+        self._mgr_limit = 40
+        self._mgr_holder = None
+        self._mgr_timer = None
+        self._asg = {}
+        self._confirm_clear = False
+        self._sheet_content = None
+        self._plans = {}
+        self._plan_sigs = {}
+        self._custom_badges = {}
+        self._patched = {}
+        self._stop_evt = threading.Event()
+        self._wake = threading.Event()
+        self._lock = threading.RLock()
+        self._cached_uid = None
+        self._uid_ts = 0.0
+        self._sweep_pending = False
+        self._refresh_pending = False
+        self._sheet = None
+        self._sheet_wrap = None
+        self._sheet_sv = None
+        self._sheet_page = ""
+        self._fields = []
+
+    def on_plugin_load(self):
+        self._stop_evt.clear()
+        self._load_custom_badges()
+        self._load_history()
+        self._load_supporters()
+        self._rebuild_badges()
+        try:
+            run_on_ui_thread(lambda: setattr(self, "_ui_ident", threading.get_ident()))
+        except Exception:
+            pass
+        self._arm()
+        self._start_update_check()
+        self._start_supporters_loop()
+        self._maybe_show_welcome_dialog()
+
+        try:
+            self.add_menu_item(MenuItemData(
+                menu_type=MenuItemType.PROFILE_ACTION_MENU,
+                text="Local Badges",
+                icon="msg_verified",
+                on_click=self._on_profile_menu_click,
+                priority=800
+            ))
+        except Exception as e:
+            self._log(f"Error adding menu item: {e}")
+        try:
+            chat_type = getattr(MenuItemType, "CHAT_ACTION_MENU", None)
+            if chat_type is not None:
+                self.add_menu_item(MenuItemData(
+                    menu_type=chat_type,
+                    text="Local Badges",
+                    icon="msg_verified",
+                    on_click=self._on_chat_menu_click,
+                    priority=800
+                ))
+        except Exception as e:
+            self._log(f"Error adding chat menu item: {e}")
+
+    def on_plugin_unload(self):
+        self._stop_evt.set()
+        self._wake.set()
+        try:
+            if self._mgr_timer is not None:
+                self._mgr_timer.cancel()
+        except Exception:
+            pass
+        for h in self._hooks:
+            try:
+                self.unhook_method(h)
+            except Exception:
+                pass
+        self._hooks = []
+        try:
+            self._restore_all()
+            self._refresh_ui(force=True)
+        except Exception as e:
+            self._log(f"restore on unload: {e}")
+
+    def _toast(self, text, kind="info"):
+        def _go():
+            try:
+                names = {"error": ("show_error", "show"), "success": ("show_success", "show_info", "show")}.get(
+                    kind, ("show_info", "show"))
+                for n in names:
+                    fn = getattr(BulletinHelper, n, None)
+                    if fn is not None:
+                        fn(text)
+                        return
+            except Exception:
+                pass
+        try:
+            run_on_ui_thread(_go)
+        except Exception:
+            _go()
+
+    def _log(self, msg):
+        try:
+            log(f"[LocalBadges] {msg}")
+        except Exception:
+            pass
+
+    def _account(self):
+        try:
+            from org.telegram.messenger import UserConfig
+            return int(UserConfig.selectedAccount)
+        except Exception:
+            return 0
+
+    def _cur_uid(self, force=False):
+        now = time.monotonic()
+        if not force and self._cached_uid and now - self._uid_ts < 1.5:
+            return self._cached_uid
+        self._uid_ts = now
+        uid = None
+        try:
+            from org.telegram.messenger import UserConfig
+            uid = int(UserConfig.getInstance(self._account()).getClientUserId())
+        except Exception:
+            try:
+                uc = get_user_config()
+                uid = int(uc.getClientUserId()) if uc else None
+            except Exception:
+                uid = None
+        self._cached_uid = uid or None
+        return self._cached_uid
+
+    @staticmethod
+    def _key(space, oid):
+        return "%s:%d" % (space, int(oid))
+
+    @staticmethod
+    def _split_key(key):
+        space, _, rest = str(key).partition(":")
+        return space, int(rest)
+
+    def _same(self, a, b):
+        if a is b:
+            return True
+        try:
+            return bool(a.equals(b))
+        except Exception:
+            return False
+
+    def _theme_color(self, names, default):
+        try:
+            from org.telegram.ui.ActionBar import Theme
+            for n in names:
+                try:
+                    return int(Theme.getColor(getattr(Theme, n)))
+                except Exception:
+                    continue
+        except Exception:
+            pass
+        return default
+
+    def _maybe_show_welcome_dialog(self):
+        if self.get_setting("seen_welcome_dialog", False):
+            return
+
+        def _mark_seen():
+            try:
+                self.set_setting("seen_welcome_dialog", True, reload_settings=False)
+            except Exception as e:
+                self._log(f"failed to persist seen_welcome_dialog: {e}")
+
+        def _show(attempt=0):
+            try:
+                last_fragment = get_last_fragment()
+                if not last_fragment or not last_fragment.getParentActivity():
+                    if attempt < 5 and not self._stop_evt.is_set():
+                        threading.Timer(
+                            1.0, lambda: run_on_ui_thread(lambda: _show(attempt + 1))
+                        ).start()
+                    return
+
+                context = last_fragment.getParentActivity()
+                builder = AlertDialogBuilder(context, AlertDialogBuilder.ALERT_TYPE_MESSAGE)
+                builder.set_title("LocalBadges успешно включен")
+                builder.set_message(
+                    "Спасибо, что установили LocalBadges! Плагин добавляет локальные бейджи, "
+                    "scam-пометки и другие значки для официальных лиц.\n\n"
+                    "Обновления плагина и другие полезные плагины для "
+                    "exteraGram публикуются в нашем канале @HysteriaPlugins.\n\n"
+                    "Подпишитесь, чтобы не пропустить новые версии и бейджи!"
+                )
+
+                def _on_join(d, w):
+                    self._open_channel()
+                    try:
+                        d.dismiss()
+                    except Exception:
+                        pass
+                    _mark_seen()
+
+                def _on_decline(d, w):
+                    try:
+                        d.dismiss()
+                    except Exception:
+                        pass
+                    _mark_seen()
+
+                builder.set_positive_button("Подписаться", _on_join)
+                builder.set_negative_button("Не показывать снова", _on_decline)
+                builder.set_cancelable(True)
+                builder.set_canceled_on_touch_outside(False)
+                builder.show()
+            except Exception as e:
+                self._log(f"welcome dialog error: {e}")
+
+        threading.Timer(2.0, lambda: run_on_ui_thread(lambda: _show(0))).start()
+
+    def _open_channel(self):
+        try:
+            from org.telegram.messenger.browser import Browser
+            from android.net import Uri
+            context = self._activity()
+            if context:
+                Browser.openUrl(context, Uri.parse("https://t.me/HysteriaPlugins"), True, True)
+        except Exception:
+            pass
+
+    def _load_custom_badges(self):
+        import json
+        loaded = {}
+        migrated = False
+        try:
+            raw = json.loads(self.get_setting("custom_badges", "{}") or "{}")
+            if isinstance(raw, dict):
+                for k, v in raw.items():
+                    if not isinstance(v, dict):
+                        continue
+                    k = str(k)
+                    if ":" not in k:
+                        k = "%s:%s" % (SPACE_USER, k)
+                        migrated = True
+                    loaded[k] = v
+        except Exception:
+            loaded = {}
+        self._custom_badges = loaded
+        if migrated:
+            self._save_custom_badges()
+
+    def _save_custom_badges(self):
+        import json
+        try:
+            self.set_setting("custom_badges", json.dumps(self._custom_badges, ensure_ascii=False),
+                             reload_settings=False)
+        except TypeError:
+            try:
+                self.set_setting("custom_badges", json.dumps(self._custom_badges, ensure_ascii=False))
+            except Exception:
+                pass
+        except Exception:
+            pass
+
+    HISTORY_MAX = 40
+
+    def _load_history(self):
+        import json
+        try:
+            raw = json.loads(self.get_setting("badge_history", "[]") or "[]")
+            self._history = [e for e in raw if isinstance(e, dict) and isinstance(e.get("c"), dict)][:self.HISTORY_MAX]
+        except Exception:
+            self._history = []
+
+    def _save_history(self):
+        import json
+        self._save_setting("badge_history", json.dumps(self._history, ensure_ascii=False))
+
+    def _hist_add(self, action, changes, label=""):
+        if not changes:
+            return
+        self._history.insert(0, {"t": int(time.time()), "a": action, "n": str(label or ""), "c": changes})
+        del self._history[self.HISTORY_MAX:]
+        self._save_history()
+
+    def _hist_undo(self, idx):
+        if idx < 0 or idx >= len(self._history):
+            return
+        entry = self._history[idx]
+        changes = entry.get("c") or {}
+        for key, prev in changes.items():
+            if prev is None:
+                self._custom_badges.pop(key, None)
+            elif isinstance(prev, dict):
+                self._custom_badges[key] = prev
+        del self._history[idx]
+        self._save_history()
+        self._save_custom_badges()
+        self._rebuild_badges()
+        for key in changes:
+            try:
+                space, oid = self._split_key(key)
+                self._touch(space, oid)
+            except Exception:
+                pass
+        self._refresh_ui()
+        self._toast("Изменение отменено", "success")
+
+    def _hist_clear(self):
+        self._history = []
+        self._save_history()
+
+    def _clipboard(self):
+        from org.telegram.messenger import ApplicationLoader
+        return ApplicationLoader.applicationContext.getSystemService("clipboard")
+
+    def _export_badges(self):
+        import json
+        if not self._custom_badges:
+            self._toast("Нечего экспортировать: бейджей нет", "error")
+            return
+        try:
+            from android.content import ClipData
+            payload = json.dumps({"app": "LocalBadges", "version": 1, "badges": self._custom_badges},
+                                 ensure_ascii=False)
+            self._clipboard().setPrimaryClip(ClipData.newPlainText("LocalBadges", payload))
+            self._toast("Скопировано в буфер: %d шт." % len(self._custom_badges), "success")
+        except Exception as e:
+            self._toast("Не удалось скопировать: %s" % e, "error")
+
+    @staticmethod
+    def _clean_badge(key, data):
+        key = str(key)
+        if not re.match(r"^[uc]:\d{1,15}$", key) or not isinstance(data, dict):
+            return None, None
+        t = str(data.get("type", "major"))
+        if t not in TYPE_LABELS:
+            return None, None
+        emoji = data.get("custom_emoji_id")
+        emoji = str(emoji) if emoji and str(emoji).isdigit() else None
+        if t == "custom" and not emoji:
+            return None, None
+        st = data.get("subtype")
+        try:
+            until = max(0, int(data.get("until") or 0))
+        except Exception:
+            until = 0
+        return key, {
+            "until": until,
+            "type": t,
+            "custom_emoji_id": emoji,
+            "description": str(data.get("description") or "")[:300],
+            "name": str(data.get("name") or "")[:80],
+            "subtype": st if st in SUBTYPES else None,
+        }
+
+    def _import_badges(self):
+        import json
+        try:
+            clip = self._clipboard().getPrimaryClip()
+            text = str(clip.getItemAt(0).coerceToText(self._activity())) if clip is not None and clip.getItemCount() > 0 else ""
+            raw = json.loads(text)
+            if isinstance(raw, dict) and isinstance(raw.get("badges"), dict):
+                raw = raw["badges"]
+            if not isinstance(raw, dict):
+                raise ValueError("формат")
+        except Exception:
+            self._toast("В буфере нет данных LocalBadges", "error")
+            return
+        changes, added = {}, {}
+        for key, data in list(raw.items())[:500]:
+            k, clean = self._clean_badge(key, data)
+            if k is not None:
+                changes[k] = dict(self._custom_badges[k]) if k in self._custom_badges else None
+                added[k] = clean
+        if not added:
+            self._toast("Подходящих бейджей в буфере не найдено", "error")
+            return
+        self._custom_badges.update(added)
+        self._save_custom_badges()
+        self._rebuild_badges()
+        self._hist_add("import", changes, "%d шт." % len(added))
+        for key in added:
+            try:
+                space, oid = self._split_key(key)
+                self._touch(space, oid)
+            except Exception:
+                pass
+        self._refresh_ui()
+        self._mgr_refresh()
+        self._toast("Импортировано бейджей: %d" % len(added), "success")
+
+    def _get_local_badges(self, uid):
+        if not uid:
+            return []
+
+        local_badges = []
+        description = str(self.get_setting("local_badge_description", "") or "").strip()
+
+        def _mk(vtype, emoji=None, desc=""):
+            return {"kind": "id", "space": SPACE_USER, "value": str(uid), "type": vtype,
+                    "custom_emoji_id": emoji, "description": desc}
+
+        if self.get_setting("local_badge_type_major", False):
+            local_badges.append(_mk("major", None, description))
+        if self.get_setting("local_badge_type_hold", False):
+            local_badges.append(_mk("hold", None, description))
+        if self.get_setting("local_badge_type_sparkle", False):
+            local_badges.append(_mk("sparkle", None, ""))
+        if self.get_setting("local_badge_type_custom", False):
+            custom_id = str(self.get_setting("local_badge_custom_emoji_id", "") or "").strip()
+            if custom_id:
+                local_badges.append(_mk("custom", custom_id, description))
+        return local_badges
+
+    def _get_tl_bots(self):
+        if self._tl_bots is None:
+            try:
+                from org.telegram.tgnet.tl import TL_bots
+                self._tl_bots = TL_bots
+            except Exception:
+                pass
+        return self._tl_bots
+
+    def _make_bv(self, target_id, icon, desc, vtype):
+        tl = self._get_tl_bots()
+        if tl is None:
+            return None
+        try:
+            bv = tl.botVerification()
+            bv.bot_id = int(str(target_id))
+            bv.icon = int(icon)
+            bv.description = desc if desc else f"Account verified by {vtype}"
+            return bv
+        except Exception:
+            return None
+
+    def _rebuild_badges(self):
+        with self._lock:
+            self._rebuild_badges_locked()
+
+    def _rebuild_badges_locked(self):
+        hidden = bool(self.get_setting("badges_hidden", False))
+        now = time.time()
+        timed = {}
+        badges = [] if hidden else list(BUILTIN_BADGES)
+        if hidden:
+            self._custom_view = {}
+        else:
+            self._custom_view = self._custom_badges
+
+        for key, badge_data in self._custom_view.items():
+            try:
+                space, oid = self._split_key(key)
+                until = int(badge_data.get("until") or 0)
+            except Exception:
+                continue
+            if until:
+                if until <= now:
+                    continue
+                timed[key] = until
+            badges.append({
+                "kind": "id", "space": space, "value": str(oid),
+                "type": badge_data.get("type", "custom"),
+                "custom_emoji_id": badge_data.get("custom_emoji_id"),
+                "description": badge_data.get("description", "")
+            })
+
+        active = set()
+        if not hidden:
+            for uid in SUPPORTERS:
+                badge = SUPPORTER_BADGE.copy()
+                badge["value"] = uid.strip()
+                badges.append(badge)
+            for uid, until in self._sup_list:
+                if until and until < now:
+                    continue
+                active.add(uid)
+                badge = SUPPORTER_BADGE.copy()
+                badge["value"] = str(uid)
+                badges.append(badge)
+            for uid in SCAMMERS:
+                badge = SCAMMER_BADGE.copy()
+                badge["value"] = uid.strip()
+                badges.append(badge)
+            badges.extend(self._get_local_badges(self._cur_uid(force=True)))
+        self._timed_active = timed
+        self._sup_active = frozenset(active)
+        self._badges = badges
+
+        groups = {}
+        for b in badges:
+            if b.get("kind") != "id":
+                continue
+            val = str(b.get("value", "")).strip()
+            if not val.isdigit():
+                continue
+            groups.setdefault("%s:%s" % (b.get("space", SPACE_USER), int(val)), []).append(b)
+
+        plans, sigs = {}, {}
+        for key, items in groups.items():
+            sparkle = False
+            chosen = None
+            for b in items:
+                if b.get("type", "major") == "sparkle":
+                    sparkle = True
+                else:
+                    chosen = b
+            bv = None
+            icon = 0
+            if chosen is not None:
+                icon = _icon_for(chosen.get("type"), chosen.get("custom_emoji_id"))
+                bv = self._make_bv(key.split(":", 1)[1], icon, chosen.get("description", ""), chosen.get("type"))
+            plans[key] = (bv, icon, sparkle)
+            sigs[key] = (sparkle, icon, str(chosen.get("description", "")) if chosen else "")
+
+        for key in list(self._patched.keys()):
+            if sigs.get(key) != self._plan_sigs.get(key):
+                self._restore_key(key)
+        self._plans, self._plan_sigs = plans, sigs
+
+        ids = {SPACE_USER: set(), SPACE_CHAT: set()}
+        for k in plans:
+            sp, _, n = k.partition(":")
+            ids[sp].add(int(n))
+        self._ids = ids
+
+    def _restore_key(self, key):
+        entries = self._patched.pop(key, None)
+        try:
+            sp, _, n = key.partition(":")
+            self._pids[sp].discard(int(n))
+        except Exception:
+            pass
+        if not entries:
+            return
+        for target, saved in entries:
+            for name, value in saved.items():
+                try:
+                    setattr(target, name, value)
+                except Exception:
+                    pass
+
+    def _restore_all(self):
+        with self._lock:
+            for key in list(self._patched.keys()):
+                self._restore_key(key)
+
+    def _apply_badges(self, obj, space):
+        if obj is None or not self._plans:
+            return False
+        try:
+            oid = abs(int(obj.id))
+        except Exception:
+            return False
+        if oid not in self._ids[space] and oid not in self._pids[space]:
+            return False
+        key = "%s:%d" % (space, oid)
+        plan = self._plans.get(key)
+        if plan is None:
+            if key in self._patched:
+                self._restore_key(key)
+                return True
+            return False
+
+        bv, icon, sparkle = plan
+        changed = False
+        try:
+
+            inner = None
+            try:
+                inner = getattr(obj, "user", None) if space == SPACE_USER else getattr(obj, "chat", None)
+            except Exception:
+                inner = None
+            t = inner if inner is not None else obj
+            if bv is not None:
+
+                changed |= self._set_field(key, obj, "bot_verification", bv)
+                changed |= self._set_field(key, obj, "bot_verification_icon", icon)
+                if inner is not None:
+                    changed |= self._set_field(key, inner, "bot_verification", bv)
+                    changed |= self._set_field(key, inner, "bot_verification_icon", icon)
+            if sparkle:
+                changed |= self._set_field(key, t, "verified", True)
+                changed |= self._set_field(key, t, "verified_min", True)
+        except Exception:
+            pass
+        return changed
+
+    def _messages_controller(self):
+        from org.telegram.messenger import MessagesController
+        return MessagesController.getInstance(self._account())
+
+    def _touch(self, space, oid):
+        changed = False
+        try:
+            mc = self._messages_controller()
+            lid = jlong(int(oid))
+            with self._lock:
+                if space == SPACE_USER:
+                    changed |= self._apply_badges(mc.getUser(lid), space)
+                    changed |= self._apply_badges(mc.getUserFull(lid), space)
+                else:
+                    changed |= self._apply_badges(mc.getChat(lid), space)
+                    changed |= self._apply_badges(mc.getChatFull(lid), space)
+        except Exception as e:
+            self._log(f"touch {space}:{oid}: {e}")
+        return changed
+
+    def _eq(self, cur, value):
+        try:
+            if isinstance(value, bool):
+                return bool(cur) == value
+            if isinstance(value, int):
+                return int(cur) == value
+        except Exception:
+            return False
+        return self._same(cur, value)
+
+    def _set_field(self, key, target, name, value):
+        try:
+            cur = getattr(target, name, _MISSING)
+        except Exception:
+            return False
+        if cur is _MISSING:
+            return False
+        if self._eq(cur, value):
+            return False
+        entries = self._patched.get(key)
+        if entries is None:
+            entries = self._patched[key] = []
+            try:
+                sp, _, n = key.partition(":")
+                self._pids[sp].add(int(n))
+            except Exception:
+                pass
+        slot = None
+        for t, saved in entries:
+            if self._same(t, target):
+                slot = saved
+                break
+        if slot is None:
+            slot = {}
+            entries.append((target, slot))
+        if name not in slot:
+            slot[name] = cur
+        try:
+            setattr(target, name, value)
+            return True
+        except Exception:
+            return False
+
+    def _schedule_sweep(self, delay=0.0):
+        try:
+            self._wake.set()
+        except Exception:
+            pass
+
+    def _start_poller(self):
+        def _loop():
+            fail = 0
+            while not self._stop_evt.is_set():
+                self._wake.wait(10.0)
+                self._wake.clear()
+                if self._stop_evt.is_set():
+                    return
+                try:
+                    self._sweep()
+                    fail = 0
+                except Exception as e:
+                    fail += 1
+                    if fail in (1, 10):
+                        self._log(f"poller: {e}")
+                    if fail > 20:
+                        self._stop_evt.wait(10.0)
+
+        threading.Thread(target=_loop, name="LocalBadgesPoll", daemon=True).start()
+
+    def _sweep(self):
+        with self._lock:
+            old_uid = self._cached_uid
+            if self._cur_uid(force=True) != old_uid:
+                self._rebuild_badges()
+            if not self._plans and not self._patched:
+                return
+            mc = self._messages_controller()
+            changed = False
+            for key in set(self._plans) | set(self._patched):
+                try:
+                    space, oid = self._split_key(key)
+                except Exception:
+                    continue
+                lid = jlong(oid)
+                try:
+                    if space == SPACE_USER:
+                        objs = (mc.getUser(lid), mc.getUserFull(lid))
+                    else:
+                        objs = (mc.getChat(lid), mc.getChatFull(lid))
+                except Exception:
+                    continue
+                for obj in objs:
+                    if obj is not None and self._apply_badges(obj, space):
+                        changed = True
+        if changed:
+            self._refresh_ui()
+
+    def _check_account(self):
+        with self._lock:
+            old = self._cached_uid
+            if self._cur_uid(force=True) != old:
+                self._rebuild_badges()
+
+    def _refresh_ui(self, force=False):
+        if self._refresh_pending or (self._stop_evt.is_set() and not force):
+            return
+        self._refresh_pending = True
+
+        def _go():
+            self._refresh_pending = False
+            try:
+                from org.telegram.messenger import NotificationCenter, MessagesController
+                nc = NotificationCenter.getInstance(self._account())
+                nc.postNotificationName(int(NotificationCenter.updateInterfaces),
+                                        int(MessagesController.UPDATE_MASK_NAME))
+            except Exception as e:
+                self._log(f"refresh ui: {e}")
+
+        def _fire():
+            try:
+                run_on_ui_thread(_go)
+            except Exception:
+                self._refresh_pending = False
+
+        t = threading.Timer(0.6, _fire)
+        t.daemon = True
+        t.start()
+
+    def _arm(self):
+        MC = find_class("org.telegram.messenger.MessagesController")
+        if MC:
+            for name, space in (("getUser", SPACE_USER), ("getUserFull", SPACE_USER),
+                                ("getChat", SPACE_CHAT), ("getChatFull", SPACE_CHAT)):
+                try:
+                    self._hooks.extend(self.hook_all_methods(MC, name, _Interceptor(self, space)))
+                except Exception as e:
+                    self._log(f"hook {name}: {e}")
+
+    def _describe(self, space, oid):
+        try:
+            mc = self._messages_controller()
+            if space == SPACE_USER:
+                u = mc.getUser(jlong(int(oid)))
+                if u is not None:
+                    uname = getattr(u, "username", None)
+                    if uname:
+                        return "@" + str(uname)
+                    full = (str(getattr(u, "first_name", "") or "") + " " + str(getattr(u, "last_name", "") or "")).strip()
+                    if full:
+                        return full
+            else:
+                c = mc.getChat(jlong(int(oid)))
+                if c is not None:
+                    title = str(getattr(c, "title", "") or "")
+                    uname = getattr(c, "username", None)
+                    if title and uname:
+                        return "%s (@%s)" % (title, uname)
+                    if title:
+                        return title
+                    if uname:
+                        return "@" + str(uname)
+        except Exception:
+            pass
+        return ""
+
+    def _detect_subtype(self, space, oid):
+        try:
+            mc = self._messages_controller()
+            if space == SPACE_USER:
+                u = mc.getUser(jlong(int(oid)))
+                if u is not None:
+                    return "bot" if bool(getattr(u, "bot", False)) else "user"
+            else:
+                c = mc.getChat(jlong(int(oid)))
+                if c is not None:
+                    if bool(getattr(c, "broadcast", False)):
+                        return "channel"
+                    if bool(getattr(c, "megagroup", False)) or "channel" not in str(c.getClass().getSimpleName()).lower():
+                        return "group"
+                    return "channel"
+        except Exception as e:
+            self._log(f"detect subtype: {e}")
+        return None
+
+    def _after_change(self, space, oid):
+        self._touch(space, oid)
+        self._refresh_ui()
+        self._mgr_refresh()
+
+    def _set_badge(self, space, oid, badge_type, custom_emoji_id=None, description=None, name=None, subtype=None,
+                   until=None):
+        key = self._key(space, oid)
+        prev = dict(self._custom_badges[key]) if key in self._custom_badges else None
+        if until is None:
+            until = int((prev or {}).get("until") or 0)
+        self._custom_badges[key] = {
+            "type": badge_type,
+            "custom_emoji_id": custom_emoji_id,
+            "description": description or _verify_text(subtype or "user"),
+            "name": name or self._describe(space, oid),
+            "subtype": subtype,
+            "until": int(until),
+        }
+        self._save_custom_badges()
+        self._rebuild_badges()
+        self._hist_add("edit" if prev else "add", {key: prev}, self._custom_badges[key].get("name") or key)
+        self._after_change(space, oid)
+        self._toast("Бейдж сохранён: %s" % (self._custom_badges[key].get("name") or key), "success")
+
+    def _remove_badge(self, space, oid):
+        key = self._key(space, oid)
+        if key not in self._custom_badges:
+            self._toast("У этого объекта нет кастомного бейджа", "error")
+            return
+        prev = self._custom_badges.pop(key)
+        self._save_custom_badges()
+        self._rebuild_badges()
+        self._hist_add("remove", {key: dict(prev)}, prev.get("name") or key)
+        self._after_change(space, oid)
+        self._toast("Бейдж удалён", "success")
+
+    def _clear_all_badges(self):
+        keys = list(self._custom_badges.keys())
+        if not keys:
+            return
+        self._hist_add("clear", {k: dict(v) for k, v in self._custom_badges.items()}, "%d шт." % len(keys))
+        self._custom_badges = {}
+        self._save_custom_badges()
+        self._rebuild_badges()
+        for key in keys:
+            try:
+                space, oid = self._split_key(key)
+                self._touch(space, oid)
+            except Exception:
+                pass
+        self._refresh_ui()
+        self._mgr_refresh()
+        self._toast("Все кастомные бейджи удалены", "success")
+
+    def _apply_local_now(self):
+        self._rebuild_badges()
+        self._schedule_sweep(0.05)
+
+    def _read_long(self, obj, names):
+        try:
+            cls = obj.getClass()
+        except Exception:
+            return 0
+        for name in names:
+            c = cls
+            while c is not None:
+                try:
+                    f = c.getDeclaredField(name)
+                    f.setAccessible(True)
+                    val = f.get(obj)
+                    if val is not None:
+                        return int(val)
+                except Exception:
+                    pass
+                try:
+                    c = c.getSuperclass()
+                except Exception:
+                    break
+        return 0
+
+    def _target_from_fragment(self, fragment):
+        uid = self._read_long(fragment, ("userId", "user_id"))
+        if uid > 0:
+            return SPACE_USER, uid
+        cid = self._read_long(fragment, ("chatId", "chat_id", "channelId"))
+        if cid > 0:
+            return SPACE_CHAT, cid
+        did = self._read_long(fragment, ("dialogId", "dialog_id"))
+        if not did:
+            try:
+                m = fragment.getClass().getDeclaredMethod("getDialogId")
+                m.setAccessible(True)
+                did = int(m.invoke(fragment) or 0)
+            except Exception:
+                did = 0
+        if did > 0:
+            return SPACE_USER, did
+        if did < 0:
+            return SPACE_CHAT, self._normalize_chat_id(did)
+        return None, None
+
+    @staticmethod
+    def _normalize_chat_id(value):
+        n = abs(int(value))
+        if n > 1000000000000:
+            n -= 1000000000000
+        return n
+
+    def _on_profile_menu_click(self, ctx):
+        try:
+            fragment = ctx.get("fragment")
+            if fragment is None:
+                self._toast("Не удалось получить профиль", "error")
+                return
+            parent = fragment.getParentActivity()
+            if parent is None:
+                self._toast("Ошибка: нет активности", "error")
+                return
+            space, oid = self._target_from_fragment(fragment)
+            if space is None:
+                self._toast("Не удалось определить объект (пользователь, бот, канал или группа)", "error")
+                return
+            self._show_badge_dialog(parent, space, oid)
+        except Exception as e:
+            self._toast(f"Ошибка: {str(e)}", "error")
+
+    def _on_chat_menu_click(self, ctx):
+        try:
+            data = ctx if isinstance(ctx, dict) else {}
+            try:
+                self._log("chat menu ctx: %s" % ",".join(sorted(str(k) for k in data.keys())))
+            except Exception:
+                pass
+            fragment = data.get("fragment")
+            parent = None
+            try:
+                parent = fragment.getParentActivity() if fragment is not None else None
+            except Exception:
+                parent = None
+            if parent is None:
+                parent = self._activity()
+            space, oid = None, None
+            for k in ("dialog_id", "dialogId", "peer_id", "peerId", "did"):
+                v = data.get(k)
+                try:
+                    v = int(v)
+                except Exception:
+                    continue
+                if v > 0:
+                    space, oid = SPACE_USER, v
+                    break
+                if v < 0:
+                    space, oid = SPACE_CHAT, self._normalize_chat_id(v)
+                    break
+            if space is None and fragment is not None:
+                space, oid = self._target_from_fragment(fragment)
+            if space is None or parent is None:
+                self._toast("Не удалось определить чат", "error")
+                return
+            self._show_badge_dialog(parent, space, oid)
+        except Exception as e:
+            self._toast(f"Ошибка: {str(e)}", "error")
+
+    def _space_label(self, space):
+        return "Пользователь / бот" if space == SPACE_USER else "Канал / группа"
+
+    def _show_badge_dialog(self, parent, space, oid, subtype=None):
+        try:
+            key = self._key(space, oid)
+            current = self._custom_badges.get(key)
+            if subtype is None:
+                subtype = (current or {}).get("subtype") or self._detect_subtype(space, oid)
+            if subtype is None:
+                subtype = "user" if space == SPACE_USER else "channel"
+            noun = SUBTYPES[subtype][0]
+            name = self._describe(space, oid) or str(oid)
+            options = ["Major", "Hold", "Галочка (verified)", "Кастомный эмодзи"]
+            if current:
+                options.append("Удалить бейдж")
+
+            builder = AlertDialogBuilder(parent)
+            builder.set_title("Local Badges - %s" % name)
+            if current:
+                builder.set_message("%s · ID %s\nСейчас: %s" % (noun, oid, TYPE_LABELS.get(current.get("type"), current.get("type"))))
+            else:
+                builder.set_message("%s · ID %s" % (noun, oid))
+
+            def on_selected(dialog, which):
+                try:
+                    if which == 0:
+                        self._set_badge(space, oid, "major", None, _verify_text(subtype, "Major"), name, subtype)
+                    elif which == 1:
+                        self._set_badge(space, oid, "hold", None, _verify_text(subtype, "Hold"), name, subtype)
+                    elif which == 2:
+                        self._set_badge(space, oid, "sparkle", None, _verify_text(subtype), name, subtype)
+                    elif which == 3:
+                        default = (current or {}).get("description", "") if current and current.get("type") == "custom" else ""
+                        self._manual_emoji(
+                            parent,
+                            lambda emoji_id: self._ask_text(
+                                parent, "Текст бейджа", "Текст под галочкой", default, False,
+                                lambda desc: self._set_badge(space, oid, "custom", emoji_id,
+                                                             desc or _verify_text(subtype), name, subtype)))
+                    elif which == 4:
+                        self._remove_badge(space, oid)
+                except Exception as e:
+                    self._toast(f"Ошибка: {str(e)}", "error")
+
+            builder.set_items(options, on_selected)
+            builder.set_negative_button("Отмена", None)
+            builder.show()
+        except Exception as e:
+            self._toast(f"Ошибка: {str(e)}", "error")
+
+    def _ask_text(self, parent, title, hint, default, numeric, on_ok, message=None):
+        try:
+            from android.widget import EditText, LinearLayout
+            from android.text import InputType
+
+            layout = LinearLayout(parent)
+            layout.setOrientation(LinearLayout.VERTICAL)
+            et = EditText(parent)
+            et.setInputType(InputType.TYPE_CLASS_NUMBER if numeric else InputType.TYPE_CLASS_TEXT)
+            et.setHint(hint)
+            if default:
+                et.setText(str(default))
+            layout.addView(et)
+
+            builder = AlertDialogBuilder(parent)
+            builder.set_title(title)
+            if message:
+                builder.set_message(message)
+            builder.set_view(layout)
+            builder.set_positive_button("Применить", lambda d, w: on_ok(str(et.getText()).strip()))
+            builder.set_negative_button("Отмена", None)
+            builder.show()
+        except Exception as e:
+            self._toast(f"Ошибка: {str(e)}", "error")
+
+    def _manual_emoji(self, parent, on_done):
+        def _ok(text):
+            text = (text or "").strip()
+            if not text.isdigit():
+                self._toast("ID эмодзи - только цифры", "error")
+                return
+            on_done(text)
+        self._ask_text(parent, "ID эмодзи", "document_id", "", True, _ok)
+
+    def _resolve_username(self, username):
+        try:
+            obj = self._messages_controller().getUserOrChat(username)
+            if obj is None:
+                return None, None, None
+            oid = abs(int(getattr(obj, "id", 0) or 0))
+            if not oid:
+                return None, None, None
+            is_user = "user" in str(obj.getClass().getSimpleName()).lower()
+            space = SPACE_USER if is_user else SPACE_CHAT
+            return space, oid, self._detect_subtype(space, oid)
+        except Exception as e:
+            self._log(f"resolve username: {e}")
+            return None, None, None
+
+    def create_settings(self) -> List[Any]:
+        try:
+            from ui.settings import Custom
+            if _UI_OK:
+                return [Custom(view=self._build_home(self._activity(), _palette()))]
+        except Exception as e:
+            self._log(f"settings screen: {e}")
+        return [Text(
+            text="Настройки LocalBadges",
+            subtext="Бейджи, обновления и информация о плагине",
+            icon="msg_settings",
+            on_click=lambda v: self._show_page("home"),
+        )]
+
+    def _activity(self):
+        try:
+            fragment = get_last_fragment()
+            act = fragment.getParentActivity() if fragment is not None else None
+            if act is not None:
+                return act
+        except Exception:
+            pass
+        from org.telegram.messenger import ApplicationLoader
+        return ApplicationLoader.applicationContext
+
+    def _tv(self, ctx, text, size, color, bold=False):
+        tv = _TV(ctx)
+        tv.setText(str(text))
+        tv.setTextSize(float(size))
+        tv.setTextColor(color)
+        if bold:
+            tv.setTypeface(_Typeface.DEFAULT_BOLD)
+        try:
+            tv.setIncludeFontPadding(False)
+        except Exception:
+            pass
+        return tv
+
+    def _vbox(self, ctx):
+        box = _LL(ctx)
+        box.setOrientation(_LL.VERTICAL)
+        return box
+
+    def _card(self, ctx, pal, radius=16, color=None):
+        card = self._vbox(ctx)
+        card.setBackground(_rounded(color if color is not None else pal["surface_container_high"], radius))
+        card.setPadding(_dp(4), _dp(4), _dp(4), _dp(4))
+        return card
+
+    def _section(self, ctx, pal, title):
+        box = self._vbox(ctx)
+        box.addView(self._tv(ctx, title, 14, pal["primary"], True), _lp(-2, -2, None, (4, 0, 4, 8)))
+        card = self._card(ctx, pal)
+        box.addView(card, _lp(-1, -2))
+        return box, card
+
+    def _divider(self, ctx, pal):
+        line = _View(ctx)
+        line.setBackgroundColor(pal["outline_variant"])
+        return line
+
+    def _row(self, ctx, pal, title, sub=None, on_click=None, chevron=False, danger=False, letter=None):
+        row = _LL(ctx)
+        row.setOrientation(_LL.HORIZONTAL)
+        row.setGravity(_Gravity.CENTER_VERTICAL)
+        row.setPadding(_dp(14), _dp(12), _dp(14), _dp(12))
+        if letter:
+            lead = self._tv(ctx, letter, 16, pal["on_primary_container"], True)
+            lead.setGravity(_Gravity.CENTER)
+            lead.setBackground(_rounded(pal["primary_container"], 20))
+            row.addView(lead, _lp(_dp(40), _dp(40), None, (0, 0, 14, 0)))
+        col = self._vbox(ctx)
+        col.addView(self._tv(ctx, title, 17, pal["error"] if danger else pal["on_surface"]))
+        if sub:
+            col.addView(self._tv(ctx, sub, 13, pal["on_surface_variant"]), _lp(-2, -2, None, (0, 2, 0, 0)))
+        row.addView(col, _lp(0, -2, 1))
+        if chevron:
+            row.addView(self._tv(ctx, "›", 24, pal["on_surface_variant"]), _lp(-2, -2, None, (8, 0, 0, 0)))
+        if on_click is not None:
+            _set_bg(row, _ripple(pal["surface_container_high"], 14, pal["primary"]))
+            row.setClickable(True)
+            row.setOnClickListener(_Click(lambda v: on_click()))
+        return row
+
+    def _switch(self, ctx, pal, checked):
+        TW, TH = 52, 32
+        box = _FL(ctx)
+        track = _View(ctx)
+        box.addView(track, _FL.LayoutParams(_dp(TW), _dp(TH)))
+        thumb = _View(ctx)
+        tlp = _FL.LayoutParams(_dp(24), _dp(24), _Gravity.LEFT | _Gravity.CENTER_VERTICAL)
+        tlp.setMargins(_dp(4), 0, 0, 0)
+        box.addView(thumb, tlp)
+
+        def paint(on):
+            g = _GD()
+            g.setCornerRadius(float(_dp(TH)) / 2.0)
+            if on:
+                g.setColor(pal["primary"])
+            else:
+                g.setColor(pal["surface_container_highest"])
+                g.setStroke(_dp(2), pal["outline"])
+            track.setBackground(g)
+            o = _GD()
+            o.setShape(_GD.OVAL)
+            o.setColor(pal["on_primary"] if on else pal["outline"])
+            thumb.setBackground(o)
+            s = 1.0 if on else 16.0 / 24.0
+            thumb.setScaleX(float(s))
+            thumb.setScaleY(float(s))
+
+        def set_checked(value, animate=True):
+            paint(bool(value))
+            target = float(_dp(20)) if value else 0.0
+            if animate:
+                thumb.animate().translationX(target).setDuration(160).start()
+            else:
+                thumb.setTranslationX(target)
+
+        set_checked(bool(checked), False)
+        return box, set_checked
+
+    def _switch_row(self, ctx, pal, title, sub, checked, on_change):
+        row = _LL(ctx)
+        row.setOrientation(_LL.HORIZONTAL)
+        row.setGravity(_Gravity.CENTER_VERTICAL)
+        row.setPadding(_dp(14), _dp(10), _dp(14), _dp(10))
+        col = self._vbox(ctx)
+        col.addView(self._tv(ctx, title, 17, pal["on_surface"]))
+        if sub:
+            col.addView(self._tv(ctx, sub, 13, pal["on_surface_variant"]), _lp(-2, -2, None, (0, 2, 0, 0)))
+        row.addView(col, _lp(0, -2, 1))
+        sw, set_checked = self._switch(ctx, pal, checked)
+        row.addView(sw, _lp(-2, -2, None, (12, 0, 0, 0)))
+        state = {"v": bool(checked)}
+
+        def toggle(v):
+            state["v"] = not state["v"]
+            set_checked(state["v"], True)
+            on_change(state["v"])
+
+        _set_bg(row, _ripple(pal["surface_container_high"], 14, pal["primary"]))
+        row.setClickable(True)
+        row.setOnClickListener(_Click(toggle))
+        return row
+
+    def _field(self, ctx, pal, label, value, on_save, numeric=False, on_change=None, multiline=False):
+        box = self._vbox(ctx)
+        box.setPadding(_dp(14), _dp(10), _dp(14), _dp(10))
+        box.addView(self._tv(ctx, label, 12, pal["primary"], True), _lp(-2, -2, None, (4, 0, 0, 4)))
+        wrap = _FL(ctx)
+        if multiline:
+            wrap.setBackground(_rounded(pal["surface_container_highest"], 12))
+        else:
+            layers = _LayerD(jarray(_Drawable)([
+                _rounded(pal["surface_container_highest"], 12, [12, 12, 12, 12, 0, 0, 0, 0]),
+                _rounded(pal["primary"], 1),
+            ]))
+            layers.setLayerInset(1, 0, _dp(38), 0, 0)
+            wrap.setBackground(layers)
+        et = _ET(ctx)
+        et.setText(str(value if value is not None else ""))
+        et.setTextColor(pal["on_surface"])
+        et.setHintTextColor(pal["on_surface_variant"])
+        et.setTextSize(17.0)
+        if multiline:
+            et.setSingleLine(False)
+            et.setMinLines(4)
+            et.setMaxLines(9)
+            et.setGravity(_Gravity.TOP)
+            et.setInputType(_InputType.TYPE_CLASS_TEXT | _InputType.TYPE_TEXT_FLAG_MULTI_LINE)
+        else:
+            et.setSingleLine(True)
+            et.setInputType(_InputType.TYPE_CLASS_NUMBER if numeric else _InputType.TYPE_CLASS_TEXT)
+        et.setBackground(None)
+        et.setPadding(_dp(16), _dp(10), _dp(16), _dp(10))
+        et.setOnFocusChangeListener(_Focus(lambda v: on_save(str(v.getText()).strip())))
+        if on_change is not None:
+            et.addTextChangedListener(_Watcher(on_change))
+        wrap.addView(et, _FL.LayoutParams(-1, -2))
+        box.addView(wrap, _lp(-1, -2 if multiline else _dp(40)))
+        self._fields.append((et, on_save))
+        return box
+
+    def _button(self, ctx, pal, text, on_click, kind="filled"):
+        if kind == "filled":
+            fg, bg = pal["on_primary"], pal["primary"]
+        elif kind == "tonal":
+            fg, bg = pal["on_secondary_container"], pal["secondary_container"]
+        elif kind == "danger":
+            fg, bg = pal["error"], None
+        else:
+            fg, bg = pal["primary"], None
+        b = self._tv(ctx, text, 16, fg, True)
+        b.setGravity(_Gravity.CENTER)
+        b.setMinimumHeight(_dp(48))
+        b.setPadding(_dp(16), _dp(4), _dp(16), _dp(4))
+        if bg is not None:
+            _set_bg(b, _ripple(bg, 20, fg))
+        else:
+            g = _GD()
+            g.setColor(0)
+            g.setCornerRadius(float(_dp(20)))
+            g.setStroke(_dp(1), pal["error"] if kind == "danger" else pal["outline"])
+            _set_bg(b, g)
+        b.setClickable(True)
+        b.setOnClickListener(_Click(lambda v: on_click()))
+        return b
+
+    def _header(self, ctx, pal, title, subtitle=None, back=None):
+        box = self._vbox(ctx)
+        if back is not None:
+            back_tv = self._tv(ctx, "‹  Назад", 15, pal["primary"], True)
+            back_tv.setPadding(0, _dp(2), _dp(12), _dp(10))
+            back_tv.setClickable(True)
+            back_tv.setOnClickListener(_Click(lambda v: back()))
+            box.addView(back_tv)
+        box.addView(self._tv(ctx, title, 24, pal["on_surface"], True))
+        if subtitle:
+            box.addView(self._tv(ctx, subtitle, 13, pal["on_surface_variant"]), _lp(-2, -2, None, (0, 2, 0, 0)))
+        return box
+
+    def _page_root(self, ctx):
+        root = self._vbox(ctx)
+        root.setPadding(_dp(16), _dp(18), _dp(16), _dp(24))
+        return root
+
+    def _sheet_alive(self):
+        try:
+            return self._sheet is not None and bool(self._sheet.isShowing())
+        except Exception:
+            return False
+
+    def _flush_fields(self):
+        fields, self._fields = self._fields, []
+        for et, on_save in fields:
+            try:
+                on_save(str(et.getText()).strip())
+            except Exception:
+                pass
+
+    def _sheet_close(self):
+        self._flush_fields()
+        d, self._sheet = self._sheet, None
+        try:
+            if d is not None:
+                d.dismiss()
+        except Exception:
+            pass
+
+    def _sheet_fit(self, ctx, content):
+        dm = ctx.getResources().getDisplayMetrics()
+        cap = int(dm.heightPixels * 0.85)
+        content.measure(_View.MeasureSpec.makeMeasureSpec(int(dm.widthPixels) - _dp(20), _View.MeasureSpec.EXACTLY),
+                        _View.MeasureSpec.makeMeasureSpec(0, _View.MeasureSpec.UNSPECIFIED))
+        return cap if int(content.getMeasuredHeight()) > cap else -2
+
+    def _sheet_refit(self, ctx):
+        try:
+            if self._sheet_alive() and self._sheet_content is not None:
+                lp = self._sheet_wrap.getLayoutParams()
+                h = self._sheet_fit(ctx, self._sheet_content)
+                if lp.height != h:
+                    lp.height = h
+                    self._sheet_wrap.setLayoutParams(lp)
+        except Exception:
+            pass
+
+    def _sheet_show(self, ctx, content, pal):
+        self._sheet_content = content
+        if self._sheet_alive():
+            try:
+                lp = self._sheet_wrap.getLayoutParams()
+                lp.height = self._sheet_fit(ctx, content)
+                self._sheet_wrap.setLayoutParams(lp)
+                self._sheet_sv.removeAllViews()
+                self._sheet_sv.addView(content)
+                self._sheet_sv.scrollTo(0, 0)
+                content.setAlpha(0.0)
+                content.animate().alpha(1.0).setDuration(200).start()
+                return
+            except Exception as e:
+                self._log(f"sheet swap: {e}")
+
+        from android.app import Dialog
+        d = Dialog(ctx, jclass("android.R$style").Theme_Translucent_NoTitleBar)
+        sv = _SV(ctx)
+        sv.setFillViewport(False)
+        sv.setOverScrollMode(_View.OVER_SCROLL_NEVER)
+        sv.addView(content)
+        wrap = _FL(ctx)
+        wrap.setClickable(True)
+        wrap.setBackground(_rounded(pal["surface_container"], 0, [28, 28, 28, 28, 0, 0, 0, 0]))
+        wrap.addView(sv, _FL.LayoutParams(-1, -1))
+        grip_box = _FL(ctx)
+        grip = _View(ctx)
+        grip.setBackground(_rounded(pal["outline_variant"], 2))
+        glp = _FL.LayoutParams(_dp(32), _dp(4), _Gravity.CENTER_HORIZONTAL | _Gravity.TOP)
+        glp.setMargins(0, _dp(10), 0, 0)
+        grip_box.addView(grip, glp)
+        wrap.addView(grip_box, _FL.LayoutParams(-1, _dp(28), _Gravity.TOP))
+        outer = _FL(ctx)
+        outer.setOnClickListener(_Click(lambda v: self._sheet_close()))
+        wlp = _FL.LayoutParams(-1, self._sheet_fit(ctx, content), _Gravity.BOTTOM)
+        wlp.setMargins(_dp(10), 0, _dp(10), 0)
+        outer.addView(wrap, wlp)
+        d.setContentView(outer)
+        w = d.getWindow()
+        w.setBackgroundDrawable(_CD(0))
+        w.setLayout(-1, -1)
+        w.addFlags(2)
+        w.setDimAmount(0.4)
+        w.setSoftInputMode(16)
+        d.setOnDismissListener(_Dismiss(self._on_sheet_dismissed))
+        dm = ctx.getResources().getDisplayMetrics()
+        wrap.setTranslationY(float(dm.heightPixels))
+        d.show()
+        self._sheet, self._sheet_wrap, self._sheet_sv = d, wrap, sv
+
+        def _slide():
+            try:
+                from android.view.animation import PathInterpolator
+                wrap.animate().translationY(0.0).setDuration(380) \
+                    .setInterpolator(PathInterpolator(0.05, 0.7, 0.1, 1.0)).start()
+            except Exception:
+                wrap.setTranslationY(0.0)
+
+        wrap.post(_Run(_slide))
+
+    def _on_sheet_dismissed(self):
+        self._flush_fields()
+        self._sheet = None
+        self._sheet_page = ""
+
+    def _show_page(self, name):
+        def _go():
+            try:
+                self._flush_fields()
+                ctx = self._activity()
+                pal = _palette()
+                self._sheet_page = name
+                if name == "home":
+                    content = self._build_home(ctx, pal)
+                else:
+                    root = self._page_root(ctx)
+                    titles = {
+                        "manager": ("Управление бейджами", "Выдача, изменение и удаление"),
+                        "assign": (("Массовая выдача" if self._asg.get("bulk") else
+                                    ("Изменить бейдж" if self._asg.get("key") else "Новый бейдж")),
+                                   "Настройте значок и подпись"),
+                        "supporter": ("Supporter", "Бейдж за поддержку проекта"),
+                        "history": ("Журнал изменений", "Последние %d действий" % self.HISTORY_MAX),
+                        "local": ("Мои бейджи", "Видны только в вашем профиле"),
+                        "updates": ("Обновления", "Версия v%s" % __version__),
+                        "about": ("О плагине", "LocalBadges"),
+                    }
+                    title, subtitle = titles.get(name, (name, None))
+                    back_to = "manager" if name in ("assign", "history") else "home"
+                    root.addView(self._header(ctx, pal, title, subtitle, back=lambda: self._show_page(back_to)),
+                                 _lp(-1, -2, None, (0, 0, 0, 14)))
+                    getattr(self, "_page_" + name)(ctx, pal, root)
+                    content = root
+                self._sheet_show(ctx, content, pal)
+            except Exception as e:
+                self._log(f"show page {name}: {e}")
+                self._toast(f"Ошибка: {e}", "error")
+        run_on_ui_thread(_go)
+
+    def _local_summary(self):
+        names = []
+        for key, label in (("local_badge_type_major", "Major"), ("local_badge_type_hold", "Hold"),
+                           ("local_badge_type_sparkle", "Галочка"), ("local_badge_type_custom", "Эмодзи")):
+            if self.get_setting(key, False):
+                names.append(label)
+        return ", ".join(names) if names else "Выключены"
+
+    def _build_home(self, ctx, pal):
+        root = self._page_root(ctx)
+        root.addView(self._header(ctx, pal, "LocalBadges", "Настройки"), _lp(-1, -2, None, (0, 0, 0, 14)))
+
+        hero = self._card(ctx, pal, 20)
+        hero.setPadding(_dp(16), _dp(14), _dp(16), _dp(14))
+        hero.addView(self._tv(ctx, "Локальные бейджи и пометки", 20, pal["on_surface"], True))
+        hero.addView(self._tv(ctx, "Всё видно только в вашем клиенте, на сервер ничего не отправляется", 13,
+                              pal["on_surface_variant"]), _lp(-2, -2, None, (0, 2, 0, 6)))
+        root.addView(hero, _lp(-1, -2, None, (0, 0, 0, 16)))
+
+        sec, card = self._section(ctx, pal, "Видимость")
+        card.addView(self._switch_row(ctx, pal, "Скрыть все бейджи", "Ничего не удаляется, бейджи просто не показываются",
+                                      self.get_setting("badges_hidden", False), self._set_hidden))
+        root.addView(sec, _lp(-1, -2, None, (0, 0, 0, 16)))
+
+        mine, _until = self._my_supporter()
+        sec, card = self._section(ctx, pal, "Разделы")
+        items = (
+            ("Управление бейджами", "Выдано: %d" % len(self._custom_badges), "manager"),
+            ("Мои бейджи", self._local_summary(), "local"),
+            ("Supporter", "Активен" if mine else "Поддержать разработку", "supporter"),
+            ("Обновления", "Версия v%s" % __version__, "updates"),
+            ("О плагине", "Автор и канал", "about"),
+        )
+        for i, (title, sub, page) in enumerate(items):
+            if i:
+                card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
+            card.addView(self._row(ctx, pal, title, sub, (lambda p=page: self._show_page(p)), chevron=True))
+        root.addView(sec, _lp(-1, -2))
+        return root
+
+    def _save_setting(self, key, value):
+        try:
+            self.set_setting(key, value, reload_settings=False)
+        except TypeError:
+            self.set_setting(key, value)
+        except Exception as e:
+            self._log(f"save setting {key}: {e}")
+
+    def _page_local(self, ctx, pal, root):
+        sec, card = self._section(ctx, pal, "Тип бейджа")
+
+        def _toggle(key):
+            def _fn(value):
+                self._save_setting(key, bool(value))
+                self._apply_local_now()
+            return _fn
+
+        rows = (
+            ("local_badge_type_major", "Major", None),
+            ("local_badge_type_hold", "Hold", None),
+            ("local_badge_type_sparkle", "Галочка (verified)", None),
+            ("local_badge_type_custom", "Кастомный эмодзи", "Нужен ID эмодзи ниже"),
+        )
+        for i, (key, title, sub) in enumerate(rows):
+            if i:
+                card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
+            card.addView(self._switch_row(ctx, pal, title, sub, self.get_setting(key, False), _toggle(key)))
+        root.addView(sec, _lp(-1, -2, None, (0, 0, 0, 16)))
+
+        sec, card = self._section(ctx, pal, "Оформление")
+
+        def _saver(key):
+            def _fn(text):
+                if str(self.get_setting(key, "") or "") != text:
+                    self._save_setting(key, text)
+                    self._apply_local_now()
+            return _fn
+
+        card.addView(self._field(ctx, pal, "ID кастомного эмодзи (document_id)",
+                                 self.get_setting("local_badge_custom_emoji_id", ""),
+                                 _saver("local_badge_custom_emoji_id"), numeric=True))
+        card.addView(self._field(ctx, pal, "Текст под галочкой в профиле",
+                                 self.get_setting("local_badge_description", ""),
+                                 _saver("local_badge_description")))
+        root.addView(sec, _lp(-1, -2))
+
+    def _chip(self, ctx, pal, text, selected, on_click, size=14):
+        c = self._tv(ctx, text, size, pal["on_secondary_container"] if selected else pal["on_surface_variant"], selected)
+        c.setGravity(_Gravity.CENTER)
+        c.setSingleLine(True)
+        c.setPadding(_dp(14), _dp(8), _dp(14), _dp(8))
+        g = _GD()
+        g.setCornerRadius(float(_dp(10)))
+        if selected:
+            g.setColor(pal["secondary_container"])
+        else:
+            g.setColor(0)
+            g.setStroke(_dp(1), pal["outline"])
+        c.setBackground(g)
+        c.setClickable(True)
+        c.setOnClickListener(_Click(lambda v: on_click()))
+        return c
+
+    def _chip_row(self, ctx, pal, options, selected, on_pick, per_row=0, size=14):
+        if per_row <= 0:
+            sv = _HSV(ctx)
+            sv.setHorizontalScrollBarEnabled(False)
+            row = _LL(ctx)
+            row.setOrientation(_LL.HORIZONTAL)
+            for value, label in options:
+                row.addView(self._chip(ctx, pal, label, value == selected, (lambda v=value: on_pick(v)), size),
+                            _lp(-2, -2, None, (0, 0, 8, 0)))
+            sv.addView(row)
+            return sv
+        box = self._vbox(ctx)
+        for start in range(0, len(options), per_row):
+            row = _LL(ctx)
+            row.setOrientation(_LL.HORIZONTAL)
+            for value, label in options[start:start + per_row]:
+                row.addView(self._chip(ctx, pal, label, value == selected, (lambda v=value: on_pick(v)), size),
+                            _lp(0, -2, 1, (0, 0, 8, 8)))
+            box.addView(row, _lp(-1, -2))
+        return box
+
+    _FILTERS = (("all", "Все"), ("user", "Люди"), ("bot", "Боты"), ("channel", "Каналы"), ("group", "Группы"))
+
+    def _mgr_filtered(self):
+        q = (self._mgr_q or "").strip().lower()
+        f = self._mgr_f
+        out = []
+        for key, data in sorted(self._custom_badges.items(),
+                                key=lambda kv: (str(kv[1].get("name") or "").lower(), kv[0])):
+            try:
+                space, oid = self._split_key(key)
+            except Exception:
+                continue
+            st = data.get("subtype")
+            if f != "all":
+                ok = (st == f) if st else ((f == "user") if space == SPACE_USER else f in ("channel", "group"))
+                if not ok:
+                    continue
+            if q:
+                hay = " ".join((str(data.get("name") or ""), str(data.get("description") or ""), str(oid),
+                                TYPE_LABELS.get(data.get("type"), ""),
+                                SUBTYPES.get(st, ("",))[0])).lower()
+                if q not in hay:
+                    continue
+            out.append((key, data, space, oid))
+        return out
+
+    def _mgr_rerender(self):
+        h = self._mgr_holder
+        if not h or not self._sheet_alive() or self._sheet_page != "manager":
+            return
+        self._mgr_render(*h)
+
+    def _mgr_search_changed(self, text):
+        if text == self._mgr_q:
+            return
+        self._mgr_q = text
+        self._mgr_limit = 40
+        try:
+            if self._mgr_timer is not None:
+                self._mgr_timer.cancel()
+        except Exception:
+            pass
+        t = threading.Timer(0.3, lambda: run_on_ui_thread(self._mgr_rerender))
+        t.daemon = True
+        t.start()
+        self._mgr_timer = t
+
+    def _mgr_pick_filter(self, value):
+        self._mgr_f = value
+        self._mgr_limit = 40
+        self._mgr_rerender()
+
+    def _mgr_more(self):
+        self._mgr_limit += 40
+        self._mgr_rerender()
+
+    def _mgr_render(self, ctx, pal, holder):
+        holder.removeAllViews()
+        holder.addView(self._chip_row(ctx, pal, self._FILTERS, self._mgr_f, self._mgr_pick_filter),
+                       _lp(-1, -2, None, (0, 0, 0, 12)))
+        items = self._mgr_filtered()
+        total = len(self._custom_badges)
+        filtered = bool((self._mgr_q or "").strip()) or self._mgr_f != "all"
+        title = ("Найдено: %d из %d" % (len(items), total)) if filtered else ("Выданные бейджи (%d)" % total)
+        sec, card = self._section(ctx, pal, title)
+        if not items:
+            card.addView(self._row(ctx, pal, "Ничего не найдено" if filtered else "Пока пусто",
+                                   "Измените запрос или фильтр" if filtered
+                                   else "Добавьте бейдж кнопкой выше или через меню профиля"))
+        for i, (key, data, space, oid) in enumerate(items[:self._mgr_limit]):
+            if i:
+                card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
+            noun = SUBTYPES.get(data.get("subtype"), (self._space_label(space),))[0]
+            sub = "%s · %s · ID %d" % (TYPE_LABELS.get(data.get("type"), data.get("type")), noun, oid)
+            if data.get("description"):
+                sub += "\n" + str(data.get("description"))
+            if data.get("custom_emoji_id"):
+                sub += "\nЭмодзи: %s" % data.get("custom_emoji_id")
+            exp = int(data.get("until") or 0)
+            if exp:
+                sub += "\n" + ("Срок истёк %s" % self._fmt_until(exp) if exp <= time.time()
+                               else "Действует до %s" % self._fmt_until(exp))
+            card.addView(self._row(ctx, pal, data.get("name") or ("ID %d" % oid), sub,
+                                   (lambda k=key: self._assign_start(k)),
+                                   chevron=True, letter=TYPE_LETTERS.get(data.get("type"), "?")))
+        holder.addView(sec, _lp(-1, -2))
+        if len(items) > self._mgr_limit:
+            holder.addView(self._button(ctx, pal, "Показать ещё (%d)" % (len(items) - self._mgr_limit),
+                                        self._mgr_more, "tonal"), _lp(-1, -2, None, (0, 10, 0, 0)))
+        self._sheet_refit(ctx)
+
+    def _page_manager(self, ctx, pal, root):
+        root.addView(self._button(ctx, pal, "Добавить бейдж", lambda: self._assign_start(None)),
+                     _lp(-1, -2, None, (0, 0, 0, 8)))
+        root.addView(self._button(ctx, pal, "Массовая выдача", lambda: self._assign_start(None, True), "tonal"),
+                     _lp(-1, -2, None, (0, 0, 0, 10)))
+        if len(self._custom_badges) > 5:
+            root.addView(self._field(ctx, pal, "Поиск (имя, ID, подпись)", self._mgr_q, lambda t: None,
+                                     on_change=self._mgr_search_changed),
+                         _lp(-1, -2, None, (-14, 0, -14, 4)))
+        else:
+            self._mgr_q = ""
+        holder = self._vbox(ctx)
+        root.addView(holder, _lp(-1, -2, None, (0, 0, 0, 16)))
+        self._mgr_holder = (ctx, pal, holder)
+        self._mgr_render(ctx, pal, holder)
+
+        sec, card = self._section(ctx, pal, "Резервная копия")
+        card.addView(self._row(ctx, pal, "Экспорт в буфер обмена", "Все выданные бейджи одним JSON-текстом",
+                               self._export_badges))
+        card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
+        card.addView(self._row(ctx, pal, "Импорт из буфера обмена", "Добавит и обновит бейджи из скопированного JSON",
+                               self._import_badges))
+        card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
+        card.addView(self._row(ctx, pal, "Журнал изменений",
+                               "Записей: %d · можно откатить" % len(self._history),
+                               lambda: self._show_page("history"), chevron=True))
+        root.addView(sec, _lp(-1, -2, None, (0, 0, 0, 14)))
+
+        if self._custom_badges:
+            self._confirm_clear = False
+            btn = self._button(ctx, pal, "Удалить все бейджи", lambda: None, "danger")
+
+            def _clear_click(v=None):
+                if not self._confirm_clear:
+                    self._confirm_clear = True
+                    btn.setText("Нажмите ещё раз - удалить все (%d)" % len(self._custom_badges))
+                    return
+                self._confirm_clear = False
+                self._clear_all_badges()
+
+            btn.setOnClickListener(_Click(_clear_click))
+            root.addView(btn, _lp(-1, -2))
+
+    @staticmethod
+    def _auto_desc(subtype, btype):
+        if btype == "major":
+            return _verify_text(subtype, "Major")
+        if btype == "hold":
+            return _verify_text(subtype, "Hold")
+        return _verify_text(subtype)
+
+    def _asg_auto(self):
+        a = self._asg
+        return self._auto_desc(a["subtype"], a["type"])
+
+    def _assign_start(self, key=None, bulk=False):
+        a = {"key": key, "q": "", "type": "major", "emoji": "", "desc": "", "desc_auto": True,
+             "name": "", "subtype": "user", "bulk": bulk, "dur": "0", "cur_until": 0}
+        if key:
+            data = self._custom_badges.get(key) or {}
+            try:
+                space, oid = self._split_key(key)
+            except Exception:
+                return
+            a["space"], a["oid"] = space, oid
+            a["subtype"] = data.get("subtype") or ("user" if space == SPACE_USER else "channel")
+            a["type"] = data.get("type") or "major"
+            a["emoji"] = str(data.get("custom_emoji_id") or "")
+            a["name"] = str(data.get("name") or "")
+            a["desc"] = str(data.get("description") or "")
+            a["cur_until"] = int(data.get("until") or 0)
+            a["dur"] = "keep" if a["cur_until"] else "0"
+            self._asg = a
+            a["desc_auto"] = (a["desc"] == self._asg_auto())
+        else:
+            self._asg = a
+            a["desc"] = self._asg_auto()
+        self._show_page("assign")
+
+    DURATIONS = (("0", "Бессрочно"), ("1", "1 день"), ("7", "7 дней"), ("30", "30 дней"))
+
+    @staticmethod
+    def _fmt_until(ts):
+        return time.strftime("%d.%m.%Y %H:%M", time.localtime(int(ts)))
+
+    def _asg_until(self):
+        a = self._asg
+        dur = a.get("dur", "0")
+        if dur == "keep":
+            return None
+        days = int(dur or 0)
+        return int(time.time()) + days * 86400 if days else 0
+
+    def _asg_set(self, **kw):
+        self._flush_fields()
+        a = self._asg
+        a.update(kw)
+        if a.get("desc_auto"):
+            a["desc"] = self._asg_auto()
+        self._show_page("assign")
+
+    def _asg_set_desc(self, text):
+        a = self._asg
+        if not a:
+            return
+        if not text:
+            a["desc_auto"] = True
+            a["desc"] = self._asg_auto()
+        elif text != a.get("desc"):
+            a["desc"] = text
+            a["desc_auto"] = (text == self._asg_auto())
+
+    def _asg_preview(self, ctx, pal):
+        a = self._asg
+        card = self._card(ctx, pal, 20, pal["surface_container_highest"])
+        row = _LL(ctx)
+        row.setOrientation(_LL.HORIZONTAL)
+        row.setGravity(_Gravity.CENTER_VERTICAL)
+        row.setPadding(_dp(14), _dp(14), _dp(14), _dp(14))
+        lead = self._tv(ctx, TYPE_LETTERS.get(a["type"], "?"), 16, pal["on_primary_container"], True)
+        lead.setGravity(_Gravity.CENTER)
+        lead.setBackground(_rounded(pal["primary_container"], 24))
+        row.addView(lead, _lp(_dp(48), _dp(48), None, (0, 0, 14, 0)))
+        col = self._vbox(ctx)
+        name = a.get("name") or (a.get("q") or "").strip() or "Имя в профиле"
+        if a.get("bulk"):
+            name = "Объектов: %d" % len(self._bulk_tokens(a.get("q") or ""))
+        title_row = _LL(ctx)
+        title_row.setOrientation(_LL.HORIZONTAL)
+        title_row.setGravity(_Gravity.CENTER_VERTICAL)
+        title_row.addView(self._tv(ctx, name, 17, pal["on_surface"], True))
+        title_row.addView(self._tv(ctx, "  ✔", 17, pal["primary"], True))
+        col.addView(title_row)
+        desc = a.get("desc") or self._asg_auto()
+        col.addView(self._tv(ctx, desc, 13, pal["on_surface_variant"]), _lp(-2, -2, None, (0, 3, 0, 0)))
+        kind = TYPE_LABELS.get(a["type"], a["type"])
+        if a["type"] == "custom" and a.get("emoji"):
+            kind += " · " + a["emoji"]
+        col.addView(self._tv(ctx, "Значок: %s" % kind, 12, pal["primary"]), _lp(-2, -2, None, (0, 4, 0, 0)))
+        dur = a.get("dur", "0")
+        if dur == "keep" and a.get("cur_until"):
+            term = "до %s" % self._fmt_until(a["cur_until"])
+        elif dur in ("", "0", "keep"):
+            term = "бессрочно"
+        else:
+            term = "%s дн." % dur
+        col.addView(self._tv(ctx, "Срок: %s" % term, 12, pal["on_surface_variant"]), _lp(-2, -2, None, (0, 2, 0, 0)))
+        row.addView(col, _lp(0, -2, 1))
+        card.addView(row)
+        return card
+
+    def _page_assign(self, ctx, pal, root):
+        a = self._asg
+        if not a:
+            self._assign_start(None)
+            return
+        editing = bool(a.get("key"))
+
+        if editing:
+            sec, card = self._section(ctx, pal, "Объект")
+            card.addView(self._row(ctx, pal, a.get("name") or ("ID %d" % a["oid"]),
+                                   "%s · ID %d" % (SUBTYPES.get(a["subtype"], ("",))[0], a["oid"])))
+            kinds = [(k, SUBTYPES[k][0]) for k in SUBTYPES if SUBTYPES[k][2] == a["space"]]
+        elif a.get("bulk"):
+            sec, card = self._section(ctx, pal, "Кому")
+            card.addView(self._field(ctx, pal, "ID или @username, по одному на строку", a.get("q", ""),
+                                     lambda t: self._asg.__setitem__("q", t), multiline=True))
+            kinds = [(k, SUBTYPES[k][0]) for k in SUBTYPES]
+        else:
+            sec, card = self._section(ctx, pal, "Кому")
+            card.addView(self._field(ctx, pal, "ID или @username", a.get("q", ""),
+                                     lambda t: self._asg.__setitem__("q", t)))
+            kinds = [(k, SUBTYPES[k][0]) for k in SUBTYPES]
+        root.addView(sec, _lp(-1, -2, None, (0, 0, 0, 12)))
+        root.addView(self._tv(ctx, "Тип объекта", 13, pal["on_surface_variant"]), _lp(-2, -2, None, (4, 0, 0, 6)))
+        root.addView(self._chip_row(ctx, pal, kinds, a["subtype"], lambda v: self._asg_set(subtype=v), per_row=2),
+                     _lp(-1, -2, None, (0, 0, 0, 4)))
+
+        root.addView(self._tv(ctx, "Значок", 13, pal["on_surface_variant"]), _lp(-2, -2, None, (4, 4, 0, 6)))
+        root.addView(self._chip_row(ctx, pal, [(k, TYPE_LABELS[k]) for k in ("major", "hold", "sparkle", "custom")],
+                                    a["type"], lambda v: self._asg_set(type=v), per_row=4, size=13),
+                     _lp(-1, -2, None, (0, 0, 0, 4)))
+
+        root.addView(self._tv(ctx, "Срок действия", 13, pal["on_surface_variant"]), _lp(-2, -2, None, (4, 4, 0, 6)))
+        durs = list(self.DURATIONS)
+        if a.get("key") and a.get("cur_until"):
+            durs.insert(0, ("keep", "Как сейчас"))
+        root.addView(self._chip_row(ctx, pal, durs, a.get("dur", "0"), lambda v: self._asg_set(dur=v),
+                                    per_row=len(durs) if len(durs) <= 4 else 3, size=13),
+                     _lp(-1, -2, None, (0, 0, 0, 4)))
+
+        sec, card = self._section(ctx, pal, "Оформление")
+        if a["type"] == "custom":
+            card.addView(self._field(ctx, pal, "ID кастомного эмодзи (document_id)", a.get("emoji", ""),
+                                     lambda t: self._asg.__setitem__("emoji", t), numeric=True))
+        card.addView(self._field(ctx, pal, "Текст под галочкой в профиле", a.get("desc", ""), self._asg_set_desc))
+        root.addView(sec, _lp(-1, -2, None, (0, 8, 0, 14)))
+
+        root.addView(self._tv(ctx, "Предпросмотр", 14, pal["primary"], True), _lp(-2, -2, None, (4, 0, 4, 8)))
+        root.addView(self._asg_preview(ctx, pal), _lp(-1, -2, None, (0, 0, 0, 16)))
+
+        root.addView(self._button(ctx, pal, "Сохранить", self._assign_save), _lp(-1, -2, None, (0, 0, 0, 8)))
+        root.addView(self._button(ctx, pal, "Отмена", lambda: self._show_page("manager"), "outlined"),
+                     _lp(-1, -2, None, (0, 0, 0, 8)))
+        if editing:
+            root.addView(self._button(ctx, pal, "Удалить бейдж", self._assign_delete, "danger"), _lp(-1, -2))
+
+    @staticmethod
+    def _bulk_tokens(text):
+        seen, out = set(), []
+        for t in re.split(r"[\s,;]+", str(text or "").strip()):
+            if t and t not in seen:
+                seen.add(t)
+                out.append(t)
+        return out[:200]
+
+    def _bulk_save(self):
+        a = self._asg
+        tokens = self._bulk_tokens(a.get("q"))
+        if not tokens:
+            self._toast("Вставьте ID или @username", "error")
+            return
+        btype = a["type"]
+        emoji = str(a.get("emoji") or "").strip()
+        if btype == "custom" and not emoji.isdigit():
+            self._toast("ID эмодзи - только цифры", "error")
+            return
+        changes, bad, done = {}, [], 0
+        until_ts = self._asg_until() or 0
+        for tok in tokens:
+            if tok.startswith("@") or not re.match(r"^-?\d+$", tok):
+                space, oid, detected = self._resolve_username(tok.lstrip("@"))
+                if space is None:
+                    bad.append(tok)
+                    continue
+                st = detected or ("user" if space == SPACE_USER else "channel")
+                if SUBTYPES.get(st, ("", "", None))[2] != space:
+                    st = "user" if space == SPACE_USER else "channel"
+            else:
+                value = int(tok)
+                if value < 0:
+                    space = SPACE_CHAT
+                    oid = self._normalize_chat_id(value)
+                    st = self._detect_subtype(space, oid) or (
+                        a["subtype"] if SUBTYPES[a["subtype"]][2] == SPACE_CHAT else "channel")
+                else:
+                    st = a["subtype"]
+                    space = SUBTYPES[st][2]
+                    oid = value if space == SPACE_USER else self._normalize_chat_id(value)
+            key = self._key(space, oid)
+            if key not in changes:
+                changes[key] = dict(self._custom_badges[key]) if key in self._custom_badges else None
+            desc = self._auto_desc(st, btype) if a.get("desc_auto") else (a.get("desc") or self._auto_desc(st, btype))
+            self._custom_badges[key] = {
+                "type": btype,
+                "custom_emoji_id": emoji if btype == "custom" else None,
+                "description": desc,
+                "name": self._describe(space, oid),
+                "subtype": st,
+                "until": int(until_ts or 0),
+            }
+            done += 1
+        if not done:
+            self._toast("Ничего не выдано: не найдено %s" % ", ".join(bad[:3]), "error")
+            return
+        self._save_custom_badges()
+        self._rebuild_badges()
+        self._hist_add("bulk", changes, "%d шт." % done)
+        for key in changes:
+            try:
+                space, oid = self._split_key(key)
+                self._touch(space, oid)
+            except Exception:
+                pass
+        self._refresh_ui()
+        msg = "Выдано: %d" % done
+        if bad:
+            msg += ", не найдено: %d (%s)" % (len(bad), ", ".join(bad[:3]))
+        self._toast(msg, "success" if not bad else "info")
+        self._show_page("manager")
+
+    def _assign_delete(self):
+        a = self._asg
+        if a and a.get("key"):
+            self._remove_badge(a["space"], a["oid"])
+        self._show_page("manager")
+
+    def _assign_save(self):
+        self._flush_fields()
+        a = self._asg
+        if not a:
+            return
+        if a.get("bulk"):
+            self._bulk_save()
+            return
+        subtype = a["subtype"]
+        if a.get("key"):
+            space, oid = a["space"], a["oid"]
+        else:
+            text = (a.get("q") or "").strip()
+            if not text:
+                self._toast("Укажите ID или @username", "error")
+                return
+            if text.startswith("@") or not re.match(r"^-?\d+$", text):
+                space, oid, detected = self._resolve_username(text.lstrip("@").strip())
+                if space is None:
+                    self._toast("@%s не найден в кэше клиента. Откройте профиль или укажите ID" % text.lstrip("@"),
+                                "error")
+                    return
+                subtype = detected or subtype
+                if SUBTYPES.get(subtype, ("", "", None))[2] != space:
+                    subtype = "user" if space == SPACE_USER else "channel"
+            else:
+                space = SUBTYPES[subtype][2]
+                value = int(text)
+                oid = abs(value) if space == SPACE_USER else self._normalize_chat_id(value)
+        btype = a["type"]
+        emoji = str(a.get("emoji") or "").strip()
+        if btype == "custom" and not emoji.isdigit():
+            self._toast("ID эмодзи - только цифры", "error")
+            return
+        a["subtype"] = subtype
+        desc = a.get("desc") or self._asg_auto()
+        name = a.get("name") or self._describe(space, oid)
+        self._set_badge(space, oid, btype, emoji if btype == "custom" else None, desc, name, subtype,
+                        self._asg_until())
+        self._show_page("manager")
+
+    _ACTION_LABELS = {"add": "Выдан", "edit": "Изменён", "remove": "Удалён", "clear": "Удалены все",
+                      "import": "Импорт", "bulk": "Массовая выдача"}
+
+    def _page_history(self, ctx, pal, root):
+        if not self._history:
+            sec, card = self._section(ctx, pal, "Журнал")
+            card.addView(self._row(ctx, pal, "Пока пусто", "Здесь появятся выдача, изменения и удаления"))
+            root.addView(sec, _lp(-1, -2))
+            return
+        sec, card = self._section(ctx, pal, "Записи (%d)" % len(self._history))
+        for i, e in enumerate(self._history):
+            if i:
+                card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
+            n = len(e.get("c") or {})
+            title = self._ACTION_LABELS.get(e.get("a"), "Изменение")
+            if e.get("n"):
+                title += ": " + str(e.get("n"))
+            try:
+                when = time.strftime("%d.%m %H:%M", time.localtime(int(e.get("t", 0))))
+            except Exception:
+                when = ""
+            row = self._row(ctx, pal, title, "%s · объектов: %d" % (when, n))
+            undo = self._tv(ctx, "Откатить", 14, pal["primary"], True)
+            undo.setPadding(_dp(12), _dp(8), _dp(4), _dp(8))
+            undo.setClickable(True)
+            undo.setOnClickListener(_Click(lambda v, idx=i: self._hist_undo_ui(idx)))
+            row.addView(undo, _lp(-2, -2, None, (8, 0, 0, 0)))
+            card.addView(row)
+        root.addView(sec, _lp(-1, -2, None, (0, 0, 0, 14)))
+        root.addView(self._button(ctx, pal, "Очистить журнал", self._hist_clear_ui, "outlined"), _lp(-1, -2))
+
+    def _hist_undo_ui(self, idx):
+        self._hist_undo(idx)
+        self._show_page("history")
+
+    def _hist_clear_ui(self):
+        self._hist_clear()
+        self._show_page("history")
+
+    def _page_supporter(self, ctx, pal, root):
+        mine, until = self._my_supporter()
+        sec, card = self._section(ctx, pal, "Статус")
+        if mine:
+            sub = "Бессрочно" if not until else "Действует до %s" % time.strftime("%d.%m.%Y", time.localtime(until))
+            since = self._sup_since.get(self._cur_uid(), 0)
+            if since:
+                sub += ", с %s" % time.strftime("%d.%m.%Y", time.localtime(since))
+            card.addView(self._row(ctx, pal, "Вы Supporter", sub, letter="S"))
+        else:
+            card.addView(self._row(ctx, pal, "Бейдж не оформлен",
+                                   "Навсегда за 50 ⭐ в боте @BadgesPayBot", letter="S"))
+        root.addView(sec, _lp(-1, -2, None, (0, 0, 0, 14)))
+        if not mine:
+            root.addView(self._button(ctx, pal, "Купить навсегда за 50 ⭐", lambda: self._open_support_bot("plugin")),
+                         _lp(-1, -2, None, (0, 0, 0, 8)))
+        root.addView(self._button(ctx, pal, "Подарить Supporter", lambda: self._open_support_bot("gift"), "tonal"),
+                     _lp(-1, -2, None, (0, 0, 0, 8)))
+        root.addView(self._button(ctx, pal, "Ввести промокод", lambda: self._open_support_bot("redeem"), "tonal"),
+                     _lp(-1, -2, None, (0, 0, 0, 8)))
+        root.addView(self._button(ctx, pal, "История в боте", lambda: self._open_support_bot("history"), "tonal"),
+                     _lp(-1, -2, None, (0, 0, 0, 8)))
+        root.addView(self._button(ctx, pal, "Обновить список", self._manual_supporters_refresh, "tonal"),
+                     _lp(-1, -2, None, (0, 0, 0, 14)))
+        sec, card = self._section(ctx, pal, "Как это работает")
+        card.addView(self._row(ctx, pal, "Бейдж видят все", "У всех, у кого установлен LocalBadges"))
+        card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
+        card.addView(self._row(ctx, pal, "Появляется сам", "Список обновляется раз в час, после оплаты можно нажать «Обновить список»"))
+        card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
+        card.addView(self._row(ctx, pal, "Подарки и промокоды", "Кнопки выше открывают бота: подарок другу, ввод промокода, история покупок"))
+        root.addView(sec, _lp(-1, -2))
+
+    def _page_updates(self, ctx, pal, root):
+        sec, card = self._section(ctx, pal, "Версия")
+        card.addView(self._row(ctx, pal, "Текущая версия", "v%s" % __version__))
+        card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
+        card.addView(self._row(ctx, pal, "Автопроверка", "Раз в 2 часа"))
+        root.addView(sec, _lp(-1, -2, None, (0, 0, 0, 14)))
+        root.addView(self._button(ctx, pal, "Проверить обновления сейчас", lambda: self._manual_update_check(), "tonal"),
+                     _lp(-1, -2))
+
+    def _page_about(self, ctx, pal, root):
+        sec, card = self._section(ctx, pal, "Плагин")
+        card.addView(self._row(ctx, pal, "LocalBadges", "Версия %s" % __version__))
+        card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
+        card.addView(self._row(ctx, pal, "Автор", "@oystrix"))
+        card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
+        card.addView(self._row(ctx, pal, "Канал", "@HysteriaPlugins", lambda: self._open_channel(), chevron=True))
+        root.addView(sec, _lp(-1, -2, None, (0, 0, 0, 14)))
+        sec, card = self._section(ctx, pal, "Возможности")
+        feats = (
+            ("Локальные бейджи для себя", "Major, Hold, галочка, кастомный эмодзи"),
+            ("Бейджи для других", "Пользователи, боты, каналы и группы"),
+            ("Встроенные бейджи", "Для официальных лиц и каналов"),
+            ("Пометка Scam", "Для пользователей с жалобами"),
+            ("Supporter", "Бейдж за поддержку проекта через бота"),
+        )
+        for i, (t, s) in enumerate(feats):
+            if i:
+                card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
+            card.addView(self._row(ctx, pal, t, s))
+        root.addView(sec, _lp(-1, -2))
+
+    def _mgr_refresh(self):
+        try:
+            if self._sheet_alive() and self._sheet_page in ("manager", "home"):
+                self._show_page(self._sheet_page)
+        except Exception:
+            pass
+
+    @staticmethod
+    def _parse_since(data):
+        items = data.get("supporters") if isinstance(data, dict) else data
+        out = {}
+        if not isinstance(items, list):
+            return out
+        for it in items[:SUPPORTERS_MAX_ITEMS]:
+            try:
+                if isinstance(it, dict) and it.get("since"):
+                    uid, since = int(it.get("id")), int(it.get("since"))
+                    if 0 < uid < 2 ** 52 and since > 0:
+                        out[uid] = since
+            except Exception:
+                continue
+        return out
+
+    @staticmethod
+    def _parse_supporters(data):
+        items = data.get("supporters") if isinstance(data, dict) else data
+        if not isinstance(items, list):
+            return None
+        best = {}
+        for it in items[:SUPPORTERS_MAX_ITEMS]:
+            try:
+                if isinstance(it, dict):
+                    uid, until = int(it.get("id")), int(it.get("until") or 0)
+                else:
+                    uid, until = int(it), 0
+            except Exception:
+                continue
+            if not (0 < uid < 2 ** 52) or until < 0:
+                continue
+            if uid in best and best[uid] == 0:
+                continue
+            if uid not in best or until == 0 or until > best[uid]:
+                best[uid] = until
+        return sorted(best.items())
+
+    def _load_supporters(self):
+        import json
+        try:
+            raw = json.loads(self.get_setting("supporters_cache", "{}") or "{}")
+            pairs = raw.get("list") if isinstance(raw, dict) else None
+            lst = self._parse_supporters([{"id": x[0], "until": x[1]} for x in pairs]) if isinstance(pairs, list) else []
+            self._sup_list = list(lst or [])
+            since = raw.get("since") if isinstance(raw, dict) else None
+            self._sup_since = {int(k): int(v) for k, v in since.items()} if isinstance(since, dict) else {}
+        except Exception:
+            self._sup_list = []
+
+    def _fetch_supporters(self, manual=False):
+        import urllib.request
+        import json
+        if self._sup_busy:
+            return
+        self._sup_busy = True
+        try:
+            if not SUPPORTERS_URL.startswith("https://"):
+                return
+            req = urllib.request.Request(SUPPORTERS_URL)
+            req.add_header("User-Agent", "LocalBadges/{}".format(__version__))
+            resp = urllib.request.urlopen(req, timeout=8)
+            body = resp.read(SUPPORTERS_MAX_BYTES + 1)
+            if len(body) > SUPPORTERS_MAX_BYTES:
+                raise ValueError("список слишком большой")
+            parsed = json.loads(body.decode("utf-8"))
+            lst = self._parse_supporters(parsed)
+            if lst is None:
+                raise ValueError("неверный формат")
+            since = self._parse_since(parsed)
+            changed = lst != list(self._sup_list) or since != self._sup_since
+            self._sup_list = lst
+            self._sup_since = since
+            if changed:
+                self._save_setting("supporters_cache", json.dumps({"ts": int(time.time()),
+                                                                   "list": [[a, b] for a, b in lst],
+                                                                   "since": {str(k): v for k, v in since.items()}}))
+                run_on_ui_thread(self._after_supporters)
+            if manual:
+                self._toast("Список Supporter обновлён" if changed else "Список Supporter актуален", "success")
+        except Exception as e:
+            self._log(f"supporters: {e}")
+            if manual:
+                self._toast("Не удалось обновить список: {}".format(e), "error")
+        finally:
+            self._sup_busy = False
+
+    def _after_supporters(self):
+        try:
+            self._rebuild_badges()
+            self._refresh_ui()
+            if self._sheet_alive() and self._sheet_page in ("supporter", "home", "manager"):
+                self._show_page(self._sheet_page)
+        except Exception as e:
+            self._log(f"after supporters: {e}")
+
+    def _start_supporters_loop(self):
+        def _loop():
+            if self._stop_evt.wait(25):
+                return
+            last_fetch = 0.0
+            while True:
+                try:
+                    if time.time() - last_fetch >= SUPPORTERS_REFRESH_SEC:
+                        last_fetch = time.time()
+                        self._fetch_supporters()
+                    now = time.time()
+                    live = frozenset(u for u, t in self._sup_list if not t or t >= now)
+                    expired = any(t <= now for t in list(self._timed_active.values()))
+                    if live != self._sup_active or expired:
+                        run_on_ui_thread(self._after_supporters)
+                except Exception:
+                    pass
+                if self._stop_evt.wait(300):
+                    return
+
+        threading.Thread(target=_loop, name="LocalBadgesSupporters", daemon=True).start()
+
+    def _manual_supporters_refresh(self):
+        self._toast("Обновляю список…")
+        threading.Thread(target=lambda: self._fetch_supporters(manual=True),
+                         name="LocalBadgesSupportersManual", daemon=True).start()
+
+    def _my_supporter(self):
+        uid = self._cur_uid()
+        now = time.time()
+        for u, until in self._sup_list:
+            if u == uid and (not until or until >= now):
+                return True, until
+        return False, 0
+
+    def _open_support_bot(self, start="plugin"):
+        try:
+            from org.telegram.messenger.browser import Browser
+            from android.net import Uri
+            ctx = self._activity()
+            if ctx:
+                url = SUPPORT_BOT_URL + ("?start=" + start if start else "")
+                Browser.openUrl(ctx, Uri.parse(url), True, True)
+        except Exception as e:
+            self._log(f"open bot: {e}")
+
+    def _set_hidden(self, value):
+        self._save_setting("badges_hidden", bool(value))
+        self._rebuild_badges()
+        if not value:
+            for key in list(self._plans):
+                try:
+                    space, oid = self._split_key(key)
+                    self._touch(space, oid)
+                except Exception:
+                    pass
+        self._refresh_ui()
+        self._toast("Все бейджи скрыты" if value else "Бейджи снова показываются")
+
+    def _start_update_check(self):
+        def _loop():
+
+            if self._stop_evt.wait(20):
+                return
+            while True:
+                try:
+                    self._check_for_updates()
+                except Exception:
+                    pass
+                if self._stop_evt.wait(7200):
+                    return
+
+        threading.Thread(target=_loop, name="LocalBadgesUpdate", daemon=True).start()
+
+    def _fetch_latest_version(self):
+        import urllib.request
+        import json
+        req = urllib.request.Request(GITHUB_META_URL)
+        req.add_header('User-Agent', 'LocalBadges/{}'.format(__version__))
+        response = urllib.request.urlopen(req, timeout=5)
+        data = json.loads(response.read().decode('utf-8'))
+        return str(data.get("version", "0.0.0"))
+
+    def _check_for_updates(self, manual=False):
+        try:
+            latest_version = self._fetch_latest_version()
+        except Exception as e:
+            if manual:
+                self._toast("Не удалось проверить обновления: {}".format(e), "error")
+            return
+
+        if _ver_tuple(latest_version) > _ver_tuple(__version__):
+            run_on_ui_thread(lambda: BulletinHelper.show_with_button(
+                "Доступна новая версия v{}! Обновить?".format(latest_version),
+                0, "Обновить",
+                lambda: self._download_update(latest_version),
+                None, 10000
+            ))
+        elif manual:
+            self._toast("У вас последняя версия: v{}".format(__version__), "success")
+
+    def _manual_update_check(self):
+        self._toast("Проверяю обновления…")
+        threading.Thread(target=lambda: self._check_for_updates(manual=True),
+                         name="LocalBadgesManualUpdate", daemon=True).start()
+
+    def _download_update(self, version):
+        import urllib.request
+
+        try:
+            req = urllib.request.Request(GITHUB_RAW_URL)
+            req.add_header('User-Agent', 'LocalBadges/{}'.format(__version__))
+            response = urllib.request.urlopen(req, timeout=10)
+            new_content = response.read().decode('utf-8')
+
+            with open(__file__, 'w', encoding='utf-8') as f:
+                f.write(new_content)
+
+            run_on_ui_thread(lambda: BulletinHelper.show_success(
+                "Плагин обновлён до версии v{}! Перезагрузи его.".format(version)
+            ))
+        except Exception as e:
+            run_on_ui_thread(lambda: BulletinHelper.show_error(
+                "Ошибка обновления: {}".format(str(e))
+            ))
+
+
+class _Interceptor(MethodHook):
+
+    def __init__(self, plugin, space):
+        self.m = plugin
+        self.space = space
+
+    def after_hooked_method(self, param):
+        try:
+            m = self.m
+
+            if threading.get_ident() != m._ui_ident or not m._plans:
+                return
+            obj = param.getResult()
+            if obj is None:
+                return
+            now = time.monotonic()
+            if now - m._acct_ts > 3.0:
+                m._acct_ts = now
+                m._check_account()
+            if m._lock.acquire(False):
+                try:
+                    m._apply_badges(obj, self.space)
+                finally:
+                    m._lock.release()
+        except Exception:
+            pass
