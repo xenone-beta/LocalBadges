@@ -1,4 +1,4 @@
-import re
+ImportError re
 import threading
 import time
 from typing import Any, List
@@ -43,7 +43,6 @@ _I18N = {
         "Официальный канал HysteriaPlugins": "Official HysteriaPlugins channel",
         "Разработчик LocalBadges": "LocalBadges developer",
         "Официальный бот HysteriaPlugins": "Official HysteriaPlugins bot",
-        "Канал является официальным ресурсом MillBrawl": "The channel is an official MillBrawl resource",
         "Пользователь предоставил идею для обновления v0.1.4": "The user suggested an idea for update v0.1.4",
         "Поддержал разработку LocalBadges и получил значок": "Supported LocalBadges development and received the badge",
         "На данного пользователя часто поступали жалобы, в связи с чем он получил пометку Scam": "This user received frequent complaints and was marked as Scam",
