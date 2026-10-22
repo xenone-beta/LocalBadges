@@ -23,6 +23,8 @@ __min_version__ = "12.1.1"
 GITHUB_RAW_URL = "https://raw.githubusercontent.com/xenone-beta/LocalBadges/refs/heads/main/LocalBadges.plugin"
 GITHUB_META_URL = "https://raw.githubusercontent.com/xenone-beta/LocalBadges/refs/heads/main/version.json"
 SUPPORTERS_URL = "https://raw.githubusercontent.com/xenone-beta/LocalBadges/refs/heads/main/supporters.json"
+GITHUB_REPO = "xenone-beta/LocalBadges"
+GITHUB_BRANCH = "main"
 SUPPORT_BOT_URL = "https://t.me/BadgesPayBot"
 SUPPORTERS_MAX_BYTES = 262144
 SUPPORTERS_MAX_ITEMS = 5000
@@ -34,6 +36,481 @@ ICON_HOLD = 5373168584543475852
 
 SPACE_USER = "u"
 SPACE_CHAT = "c"
+
+
+_I18N = {
+    "en": {
+        "Официальный канал HysteriaPlugins": "Official HysteriaPlugins channel",
+        "Разработчик LocalBadges": "LocalBadges developer",
+        "Официальный бот HysteriaPlugins": "Official HysteriaPlugins bot",
+        "Канал является официальным ресурсом MillBrawl": "The channel is an official MillBrawl resource",
+        "Пользователь предоставил идею для обновления v0.1.4": "The user suggested an idea for update v0.1.4",
+        "Поддержал разработку LocalBadges и получил значок": "Supported LocalBadges development and received the badge",
+        "На данного пользователя часто поступали жалобы, в связи с чем он получил пометку Scam": "This user received frequent complaints and was marked as Scam",
+        "Галочка": "Checkmark",
+        "Эмодзи": "Emoji",
+        "Пользователь": "User",
+        "верифицирован": "verified",
+        "Бот": "Bot",
+        "Канал": "Channel",
+        "Группа": "Group",
+        "верифицирована": "verified",
+        "%s %s организацией «%s»": "%s %s by the organization «%s»",
+        "LocalBadges успешно включен": "LocalBadges enabled successfully",
+        "Спасибо, что установили LocalBadges! Плагин добавляет локальные бейджи, scam-пометки и другие значки для официальных лиц.\n\nОбновления плагина и другие полезные плагины для exteraGram публикуются в нашем канале @HysteriaPlugins.\n\nПодпишитесь, чтобы не пропустить новые версии и бейджи!": "Thanks for installing LocalBadges! The plugin adds local badges, scam marks and other icons for officials.\n\nPlugin updates and other useful exteraGram plugins are published in our channel @HysteriaPlugins.\n\nSubscribe so you don't miss new versions and badges!",
+        "Подписаться": "Subscribe",
+        "Не показывать снова": "Don't show again",
+        "Изменение отменено": "Change reverted",
+        "Нечего экспортировать: бейджей нет": "Nothing to export: no badges",
+        "Скопировано в буфер: %d шт.": "Copied to clipboard: %d",
+        "Не удалось скопировать: %s": "Could not copy: %s",
+        "формат": "format",
+        "В буфере нет данных LocalBadges": "No LocalBadges data in the clipboard",
+        "Подходящих бейджей в буфере не найдено": "No suitable badges found in the clipboard",
+        "%d шт.": "%d pcs",
+        "Импортировано бейджей: %d": "Badges imported: %d",
+        "Бейдж сохранён: %s": "Badge saved: %s",
+        "У этого объекта нет кастомного бейджа": "This object has no custom badge",
+        "Бейдж удалён": "Badge removed",
+        "Все кастомные бейджи удалены": "All custom badges removed",
+        "Не удалось получить профиль": "Could not get the profile",
+        "Ошибка: нет активности": "Error: no activity",
+        "Не удалось определить объект (пользователь, бот, канал или группа)": "Could not identify the object (user, bot, channel or group)",
+        "Ошибка: ": "Error: ",
+        "Не удалось определить чат": "Could not identify the chat",
+        "Канал / группа": "Channel / group",
+        "Пользователь / бот": "User / bot",
+        "Галочка (verified)": "Checkmark (verified)",
+        "Кастомный эмодзи": "Custom emoji",
+        "Удалить бейдж": "Remove badge",
+        "%s · ID %s\nСейчас: %s": "%s · ID %s\nCurrent: %s",
+        "Текст бейджа": "Badge text",
+        "Текст под галочкой": "Text under the checkmark",
+        "Отмена": "Cancel",
+        "Применить": "Apply",
+        "ID эмодзи - только цифры": "Emoji ID: digits only",
+        "ID эмодзи": "Emoji ID",
+        "Настройки LocalBadges": "LocalBadges settings",
+        "Бейджи, обновления и информация о плагине": "Badges, updates and plugin info",
+        "‹  Назад": "‹  Back",
+        "Выдача, изменение и удаление": "Issue, edit and remove",
+        "Управление бейджами": "Manage badges",
+        "Массовая выдача": "Bulk issue",
+        "Изменить бейдж": "Edit badge",
+        "Новый бейдж": "New badge",
+        "Настройте значок и подпись": "Set up the icon and caption",
+        "Бейдж за поддержку проекта": "Badge for supporting the project",
+        "Журнал изменений": "Change log",
+        "Последние %d действий": "Last %d actions",
+        "Видны только в вашем профиле": "Visible only to you",
+        "Мои бейджи": "My badges",
+        "Версия v%s": "Version v%s",
+        "Обновления": "Updates",
+        "О плагине": "About",
+        "Выключены": "Off",
+        "Настройки": "Settings",
+        "Локальные бейджи и пометки": "Local badges and marks",
+        "Всё видно только в вашем клиенте, на сервер ничего не отправляется": "Everything is visible only in your client, nothing is sent to a server",
+        "Видимость": "Visibility",
+        "Ничего не удаляется, бейджи просто не показываются": "Nothing is deleted, badges are just hidden",
+        "Скрыть все бейджи": "Hide all badges",
+        "Разделы": "Sections",
+        "Выдано: %d": "Issued: %d",
+        "Активен": "Active",
+        "Поддержать разработку": "Support development",
+        "Автор и канал": "Author and channel",
+        "Тип бейджа": "Badge type",
+        "Нужен ID эмодзи ниже": "Needs the emoji ID below",
+        "Оформление": "Appearance",
+        "ID кастомного эмодзи (document_id)": "Custom emoji ID (document_id)",
+        "Текст под галочкой в профиле": "Text under the checkmark in the profile",
+        "Боты": "Bots",
+        "Все": "All",
+        "Группы": "Groups",
+        "Каналы": "Channels",
+        "Люди": "People",
+        "Выданные бейджи (%d)": "Issued badges (%d)",
+        "Найдено: %d из %d": "Found: %d of %d",
+        "Ничего не найдено": "Nothing found",
+        "Пока пусто": "Nothing here yet",
+        "Измените запрос или фильтр": "Change the query or filter",
+        "Добавьте бейдж кнопкой выше или через меню профиля": "Add a badge with the button above or from the profile menu",
+        "\nЭмодзи: %s": "\nEmoji: %s",
+        "Срок истёк %s": "Expired %s",
+        "Действует до %s": "Valid until %s",
+        "Показать ещё (%d)": "Show more (%d)",
+        "Добавить бейдж": "Add badge",
+        "Поиск (имя, ID, подпись)": "Search (name, ID, caption)",
+        "Резервная копия": "Backup",
+        "Все выданные бейджи одним JSON-текстом": "All issued badges as a single JSON text",
+        "Экспорт в буфер обмена": "Export to clipboard",
+        "Добавит и обновит бейджи из скопированного JSON": "Adds and updates badges from the copied JSON",
+        "Импорт из буфера обмена": "Import from clipboard",
+        "Записей: %d · можно откатить": "Entries: %d · can be reverted",
+        "Удалить все бейджи": "Remove all badges",
+        "Нажмите ещё раз - удалить все (%d)": "Tap again to remove all (%d)",
+        "1 день": "1 day",
+        "30 дней": "30 days",
+        "7 дней": "7 days",
+        "Бессрочно": "Forever",
+        "Имя в профиле": "Name in the profile",
+        "Объектов: %d": "Objects: %d",
+        "Значок: %s": "Icon: %s",
+        "до %s": "until %s",
+        "бессрочно": "forever",
+        "%s дн.": "%s d.",
+        "Срок: %s": "Duration: %s",
+        "Объект": "Object",
+        "Кому": "For",
+        "ID или @username, по одному на строку": "ID or @username, one per line",
+        "ID или @username": "ID or @username",
+        "Тип объекта": "Object type",
+        "Значок": "Icon",
+        "Срок действия": "Validity period",
+        "Как сейчас": "Keep current",
+        "Предпросмотр": "Preview",
+        "Сохранить": "Save",
+        "Вставьте ID или @username": "Paste an ID or @username",
+        "Ничего не выдано: не найдено %s": "Nothing issued: %s not found",
+        ", не найдено: %d (%s)": ", not found: %d (%s)",
+        "Укажите ID или @username": "Enter an ID or @username",
+        "@%s не найден в кэше клиента. Откройте профиль или укажите ID": "@%s was not found in the client cache. Open the profile or enter an ID",
+        "Выдан": "Issued",
+        "Изменён": "Edited",
+        "Удалены все": "All removed",
+        "Удалён": "Removed",
+        "Импорт": "Import",
+        "Журнал": "Log",
+        "Здесь появятся выдача, изменения и удаления": "Issues, edits and removals will appear here",
+        "Записи (%d)": "Entries (%d)",
+        "Изменение": "Change",
+        "%s · объектов: %d": "%s · objects: %d",
+        "Откатить": "Revert",
+        "Очистить журнал": "Clear log",
+        "Статус": "Status",
+        ", с %s": ", since %s",
+        "Вы Supporter": "You are a Supporter",
+        "Бейдж не оформлен": "No badge yet",
+        "Навсегда за 50 ⭐ в боте @BadgesPayBot": "Forever for 50 ⭐ in @BadgesPayBot",
+        "Купить навсегда за 50 ⭐": "Buy forever for 50 ⭐",
+        "Подарить Supporter": "Gift Supporter",
+        "Ввести промокод": "Enter promo code",
+        "История в боте": "History in the bot",
+        "Обновить список": "Refresh list",
+        "Как это работает": "How it works",
+        "Бейдж видят все": "Everyone sees the badge",
+        "У всех, у кого установлен LocalBadges": "Everyone who has LocalBadges installed",
+        "Появляется сам": "Appears automatically",
+        "Список обновляется раз в час, после оплаты можно нажать «Обновить список»": "The list refreshes hourly; after paying you can tap “Refresh list”",
+        "Кнопки выше открывают бота: подарок другу, ввод промокода, история покупок": "The buttons above open the bot: gift a friend, enter a promo code, purchase history",
+        "Подарки и промокоды": "Gifts and promo codes",
+        "Версия": "Version",
+        "Текущая версия": "Current version",
+        "Автопроверка": "Auto-check",
+        "Раз в 2 часа": "Every 2 hours",
+        "Проверить обновления сейчас": "Check for updates now",
+        "Плагин": "Plugin",
+        "Версия %s": "Version %s",
+        "Автор": "Author",
+        "Возможности": "Features",
+        "Major, Hold, галочка, кастомный эмодзи": "Major, Hold, checkmark, custom emoji",
+        "Локальные бейджи для себя": "Local badges for yourself",
+        "Бейджи для других": "Badges for others",
+        "Пользователи, боты, каналы и группы": "Users, bots, channels and groups",
+        "Встроенные бейджи": "Built-in badges",
+        "Для официальных лиц и каналов": "For officials and channels",
+        "Для пользователей с жалобами": "For users with complaints",
+        "Пометка Scam": "Scam mark",
+        "Бейдж за поддержку проекта через бота": "Badge for supporting the project via the bot",
+        "неверный формат": "invalid format",
+        "Список Supporter актуален": "Supporter list is up to date",
+        "Список Supporter обновлён": "Supporter list updated",
+        "Не удалось обновить список: {}": "Could not refresh the list: {}",
+        "Обновляю список…": "Refreshing the list…",
+        "Бейджи снова показываются": "Badges are shown again",
+        "Все бейджи скрыты": "All badges hidden",
+        "файл слишком большой": "file is too large",
+        "нет источников": "no sources",
+        "Не удалось проверить обновления: {}": "Could not check for updates: {}",
+        "Доступна новая версия v{}! Обновить?": "A new version v{} is available! Update?",
+        "Обновить": "Update",
+        "У вас последняя версия: v{}": "You have the latest version: v{}",
+        "Проверяю обновления…": "Checking for updates…",
+        "Плагин обновлён до версии v{}! Перезагрузи его.": "Plugin updated to v{}! Reload it.",
+        "Ошибка обновления: {}": "Update error: {}",
+        "Язык": "Language",
+        "Авто": "Auto",
+        "Язык интерфейса плагина": "Plugin interface language",
+        "Язык изменён": "Language changed",
+    },
+    "uk": {
+        "Официальный канал HysteriaPlugins": "Офіційний канал HysteriaPlugins",
+        "Разработчик LocalBadges": "Розробник LocalBadges",
+        "Официальный бот HysteriaPlugins": "Офіційний бот HysteriaPlugins",
+        "Канал является официальным ресурсом MillBrawl": "Канал є офіційним ресурсом MillBrawl",
+        "Пользователь предоставил идею для обновления v0.1.4": "Користувач запропонував ідею для оновлення v0.1.4",
+        "Поддержал разработку LocalBadges и получил значок": "Підтримав розробку LocalBadges і отримав значок",
+        "На данного пользователя часто поступали жалобы, в связи с чем он получил пометку Scam": "На цього користувача часто надходили скарги, тому він отримав позначку Scam",
+        "Галочка": "Галочка",
+        "Эмодзи": "Емодзі",
+        "Пользователь": "Користувач",
+        "верифицирован": "верифікований",
+        "Бот": "Бот",
+        "Канал": "Канал",
+        "Группа": "Група",
+        "верифицирована": "верифікована",
+        "%s %s организацией «%s»": "%s %s організацією «%s»",
+        "LocalBadges успешно включен": "LocalBadges успішно увімкнено",
+        "Спасибо, что установили LocalBadges! Плагин добавляет локальные бейджи, scam-пометки и другие значки для официальных лиц.\n\nОбновления плагина и другие полезные плагины для exteraGram публикуются в нашем канале @HysteriaPlugins.\n\nПодпишитесь, чтобы не пропустить новые версии и бейджи!": "Дякуємо, що встановили LocalBadges! Плагін додає локальні бейджі, scam-позначки та інші значки для офіційних осіб.\n\nОновлення плагіна та інші корисні плагіни для exteraGram публікуються в нашому каналі @HysteriaPlugins.\n\nПідпишіться, щоб не пропустити нові версії та бейджі!",
+        "Подписаться": "Підписатися",
+        "Не показывать снова": "Більше не показувати",
+        "Изменение отменено": "Зміну скасовано",
+        "Нечего экспортировать: бейджей нет": "Нічого експортувати: бейджів немає",
+        "Скопировано в буфер: %d шт.": "Скопійовано в буфер: %d шт.",
+        "Не удалось скопировать: %s": "Не вдалося скопіювати: %s",
+        "формат": "формат",
+        "В буфере нет данных LocalBadges": "У буфері немає даних LocalBadges",
+        "Подходящих бейджей в буфере не найдено": "Відповідних бейджів у буфері не знайдено",
+        "%d шт.": "%d шт.",
+        "Импортировано бейджей: %d": "Імпортовано бейджів: %d",
+        "Бейдж сохранён: %s": "Бейдж збережено: %s",
+        "У этого объекта нет кастомного бейджа": "У цього об’єкта немає власного бейджа",
+        "Бейдж удалён": "Бейдж видалено",
+        "Все кастомные бейджи удалены": "Усі власні бейджі видалено",
+        "Не удалось получить профиль": "Не вдалося отримати профіль",
+        "Ошибка: нет активности": "Помилка: немає активності",
+        "Не удалось определить объект (пользователь, бот, канал или группа)": "Не вдалося визначити об’єкт (користувач, бот, канал або група)",
+        "Ошибка: ": "Помилка: ",
+        "Не удалось определить чат": "Не вдалося визначити чат",
+        "Канал / группа": "Канал / група",
+        "Пользователь / бот": "Користувач / бот",
+        "Галочка (verified)": "Галочка (verified)",
+        "Кастомный эмодзи": "Власне емодзі",
+        "Удалить бейдж": "Видалити бейдж",
+        "%s · ID %s\nСейчас: %s": "%s · ID %s\nЗараз: %s",
+        "Текст бейджа": "Текст бейджа",
+        "Текст под галочкой": "Текст під галочкою",
+        "Отмена": "Скасувати",
+        "Применить": "Застосувати",
+        "ID эмодзи - только цифры": "ID емодзі: лише цифри",
+        "ID эмодзи": "ID емодзі",
+        "Настройки LocalBadges": "Налаштування LocalBadges",
+        "Бейджи, обновления и информация о плагине": "Бейджі, оновлення та інформація про плагін",
+        "‹  Назад": "‹  Назад",
+        "Выдача, изменение и удаление": "Видача, зміна та видалення",
+        "Управление бейджами": "Керування бейджами",
+        "Массовая выдача": "Масова видача",
+        "Изменить бейдж": "Змінити бейдж",
+        "Новый бейдж": "Новий бейдж",
+        "Настройте значок и подпись": "Налаштуйте значок і підпис",
+        "Бейдж за поддержку проекта": "Бейдж за підтримку проєкту",
+        "Журнал изменений": "Журнал змін",
+        "Последние %d действий": "Останні %d дій",
+        "Видны только в вашем профиле": "Видимі лише вам",
+        "Мои бейджи": "Мої бейджі",
+        "Версия v%s": "Версія v%s",
+        "Обновления": "Оновлення",
+        "О плагине": "Про плагін",
+        "Выключены": "Вимкнено",
+        "Настройки": "Налаштування",
+        "Локальные бейджи и пометки": "Локальні бейджі та позначки",
+        "Всё видно только в вашем клиенте, на сервер ничего не отправляется": "Усе видно лише у вашому клієнті, на сервер нічого не надсилається",
+        "Видимость": "Видимість",
+        "Ничего не удаляется, бейджи просто не показываются": "Нічого не видаляється, бейджі просто не показуються",
+        "Скрыть все бейджи": "Сховати всі бейджі",
+        "Разделы": "Розділи",
+        "Выдано: %d": "Видано: %d",
+        "Активен": "Активний",
+        "Поддержать разработку": "Підтримати розробку",
+        "Автор и канал": "Автор і канал",
+        "Тип бейджа": "Тип бейджа",
+        "Нужен ID эмодзи ниже": "Потрібен ID емодзі нижче",
+        "Оформление": "Оформлення",
+        "ID кастомного эмодзи (document_id)": "ID власного емодзі (document_id)",
+        "Текст под галочкой в профиле": "Текст під галочкою в профілі",
+        "Боты": "Боти",
+        "Все": "Усі",
+        "Группы": "Групи",
+        "Каналы": "Канали",
+        "Люди": "Люди",
+        "Выданные бейджи (%d)": "Видані бейджі (%d)",
+        "Найдено: %d из %d": "Знайдено: %d з %d",
+        "Ничего не найдено": "Нічого не знайдено",
+        "Пока пусто": "Поки порожньо",
+        "Измените запрос или фильтр": "Змініть запит або фільтр",
+        "Добавьте бейдж кнопкой выше или через меню профиля": "Додайте бейдж кнопкою вище або через меню профілю",
+        "\nЭмодзи: %s": "\nЕмодзі: %s",
+        "Срок истёк %s": "Термін минув %s",
+        "Действует до %s": "Діє до %s",
+        "Показать ещё (%d)": "Показати ще (%d)",
+        "Добавить бейдж": "Додати бейдж",
+        "Поиск (имя, ID, подпись)": "Пошук (ім’я, ID, підпис)",
+        "Резервная копия": "Резервна копія",
+        "Все выданные бейджи одним JSON-текстом": "Усі видані бейджі одним JSON-текстом",
+        "Экспорт в буфер обмена": "Експорт у буфер обміну",
+        "Добавит и обновит бейджи из скопированного JSON": "Додасть і оновить бейджі зі скопійованого JSON",
+        "Импорт из буфера обмена": "Імпорт з буфера обміну",
+        "Записей: %d · можно откатить": "Записів: %d · можна відкотити",
+        "Удалить все бейджи": "Видалити всі бейджі",
+        "Нажмите ещё раз - удалить все (%d)": "Натисніть ще раз, щоб видалити всі (%d)",
+        "1 день": "1 день",
+        "30 дней": "30 днів",
+        "7 дней": "7 днів",
+        "Бессрочно": "Безстроково",
+        "Имя в профиле": "Ім’я в профілі",
+        "Объектов: %d": "Об’єктів: %d",
+        "Значок: %s": "Значок: %s",
+        "до %s": "до %s",
+        "бессрочно": "безстроково",
+        "%s дн.": "%s дн.",
+        "Срок: %s": "Термін: %s",
+        "Объект": "Об’єкт",
+        "Кому": "Кому",
+        "ID или @username, по одному на строку": "ID або @username, по одному на рядок",
+        "ID или @username": "ID або @username",
+        "Тип объекта": "Тип об’єкта",
+        "Значок": "Значок",
+        "Срок действия": "Строк дії",
+        "Как сейчас": "Як зараз",
+        "Предпросмотр": "Попередній перегляд",
+        "Сохранить": "Зберегти",
+        "Вставьте ID или @username": "Вставте ID або @username",
+        "Ничего не выдано: не найдено %s": "Нічого не видано: не знайдено %s",
+        ", не найдено: %d (%s)": ", не знайдено: %d (%s)",
+        "Укажите ID или @username": "Вкажіть ID або @username",
+        "@%s не найден в кэше клиента. Откройте профиль или укажите ID": "@%s не знайдено в кеші клієнта. Відкрийте профіль або вкажіть ID",
+        "Выдан": "Видано",
+        "Изменён": "Змінено",
+        "Удалены все": "Видалено всі",
+        "Удалён": "Видалено",
+        "Импорт": "Імпорт",
+        "Журнал": "Журнал",
+        "Здесь появятся выдача, изменения и удаления": "Тут з’являтимуться видачі, зміни та видалення",
+        "Записи (%d)": "Записи (%d)",
+        "Изменение": "Зміна",
+        "%s · объектов: %d": "%s · об’єктів: %d",
+        "Откатить": "Відкотити",
+        "Очистить журнал": "Очистити журнал",
+        "Статус": "Статус",
+        ", с %s": ", з %s",
+        "Вы Supporter": "Ви Supporter",
+        "Бейдж не оформлен": "Бейдж не оформлено",
+        "Навсегда за 50 ⭐ в боте @BadgesPayBot": "Назавжди за 50 ⭐ у боті @BadgesPayBot",
+        "Купить навсегда за 50 ⭐": "Купити назавжди за 50 ⭐",
+        "Подарить Supporter": "Подарувати Supporter",
+        "Ввести промокод": "Ввести промокод",
+        "История в боте": "Історія в боті",
+        "Обновить список": "Оновити список",
+        "Как это работает": "Як це працює",
+        "Бейдж видят все": "Бейдж бачать усі",
+        "У всех, у кого установлен LocalBadges": "Усі, у кого встановлено LocalBadges",
+        "Появляется сам": "З’являється сам",
+        "Список обновляется раз в час, после оплаты можно нажать «Обновить список»": "Список оновлюється раз на годину, після оплати можна натиснути «Оновити список»",
+        "Кнопки выше открывают бота: подарок другу, ввод промокода, история покупок": "Кнопки вище відкривають бота: подарунок другові, введення промокоду, історія покупок",
+        "Подарки и промокоды": "Подарунки та промокоди",
+        "Версия": "Версія",
+        "Текущая версия": "Поточна версія",
+        "Автопроверка": "Автоперевірка",
+        "Раз в 2 часа": "Раз на 2 години",
+        "Проверить обновления сейчас": "Перевірити оновлення зараз",
+        "Плагин": "Плагін",
+        "Версия %s": "Версія %s",
+        "Автор": "Автор",
+        "Возможности": "Можливості",
+        "Major, Hold, галочка, кастомный эмодзи": "Major, Hold, галочка, власне емодзі",
+        "Локальные бейджи для себя": "Локальні бейджі для себе",
+        "Бейджи для других": "Бейджі для інших",
+        "Пользователи, боты, каналы и группы": "Користувачі, боти, канали та групи",
+        "Встроенные бейджи": "Вбудовані бейджі",
+        "Для официальных лиц и каналов": "Для офіційних осіб і каналів",
+        "Для пользователей с жалобами": "Для користувачів зі скаргами",
+        "Пометка Scam": "Позначка Scam",
+        "Бейдж за поддержку проекта через бота": "Бейдж за підтримку проєкту через бота",
+        "неверный формат": "неправильний формат",
+        "Список Supporter актуален": "Список Supporter актуальний",
+        "Список Supporter обновлён": "Список Supporter оновлено",
+        "Не удалось обновить список: {}": "Не вдалося оновити список: {}",
+        "Обновляю список…": "Оновлюю список…",
+        "Бейджи снова показываются": "Бейджі знову показуються",
+        "Все бейджи скрыты": "Усі бейджі приховано",
+        "файл слишком большой": "файл завеликий",
+        "нет источников": "немає джерел",
+        "Не удалось проверить обновления: {}": "Не вдалося перевірити оновлення: {}",
+        "Доступна новая версия v{}! Обновить?": "Доступна нова версія v{}! Оновити?",
+        "Обновить": "Оновити",
+        "У вас последняя версия: v{}": "У вас остання версія: v{}",
+        "Проверяю обновления…": "Перевіряю оновлення…",
+        "Плагин обновлён до версии v{}! Перезагрузи его.": "Плагін оновлено до версії v{}! Перезавантажте його.",
+        "Ошибка обновления: {}": "Помилка оновлення: {}",
+        "Язык": "Мова",
+        "Авто": "Авто",
+        "Язык интерфейса плагина": "Мова інтерфейсу плагіна",
+        "Язык изменён": "Мову змінено",
+    },
+}
+
+_LANG = "ru"
+LANG_CHOICES = (("auto", None), ("ru", "Русский"), ("uk", "Українська"), ("en", "English"))
+
+
+def _T(text):
+    table = _I18N.get(_LANG)
+    if table is None:
+        return text
+    return table.get(text, text)
+
+
+def _detect_lang():
+    code = ""
+    try:
+        from org.telegram.messenger import LocaleController
+        info = LocaleController.getInstance().getCurrentLocaleInfo()
+        code = str(info.getLangCode() or "")
+    except Exception:
+        code = ""
+    if not code:
+        try:
+            from java.util import Locale
+            code = str(Locale.getDefault().getLanguage() or "")
+        except Exception:
+            code = ""
+    code = code.lower().replace("_", "-").split("-")[0]
+    if code == "uk":
+        return "uk"
+    if code in ("ru", "be", "kk"):
+        return "ru"
+    return "en"
+
+
+def _set_lang(pref):
+    global _LANG
+    code = pref if pref in ("ru", "uk", "en") else _detect_lang()
+    _LANG = code
+    return code
+
+
+class _LabelDict(dict):
+    def get(self, key, default=None):
+        value = dict.get(self, key, default)
+        return _T(value) if isinstance(value, str) else value
+
+    def __getitem__(self, key):
+        return _T(dict.__getitem__(self, key))
+
+
+class _SubtypeDict(dict):
+    @staticmethod
+    def _tr(value):
+        if isinstance(value, tuple) and len(value) == 3 and isinstance(value[0], str):
+            return (_T(value[0]), _T(value[1]), value[2])
+        return value
+
+    def get(self, key, default=None):
+        return self._tr(dict.get(self, key, default))
+
+    def __getitem__(self, key):
+        return self._tr(dict.__getitem__(self, key))
+
 
 
 BUILTIN_BADGES = [
@@ -50,7 +527,7 @@ BUILTIN_BADGES = [
         "space": "u",
         "value": "5074845818",
         "type": "custom",
-        "custom_emoji_id": "5444965061749644170",
+        "custom_emoji_id": "5424669052058511745",
         "description": "Разработчик LocalBadges"
     },
     {
@@ -63,19 +540,19 @@ BUILTIN_BADGES = [
     },
     {
         "kind": "id",
+        "space": "c",
+        "value": "3899583640",
+        "type": "custom",
+        "custom_emoji_id": "5426901593238839657",
+        "description": "Канал является официальным ресурсом MillBrawl"
+    },
+    {
+        "kind": "id",
         "space": "u",
         "value": "8635704860",
         "type": "custom",
         "custom_emoji_id": "5247213725080890199",
         "description": "Пользователь предоставил идею для обновления v0.1.4"
-    },
-    {
-        "kind": "id",
-        "space": "u",
-        "value": "8891099323",
-        "type": "custom",
-        "custom_emoji_id": "5240131869470661067",
-        "description": "Официальный бот оплаты бейджей"
     }
 ]
 
@@ -107,21 +584,21 @@ SCAMMER_BADGE = {
     "description": "На данного пользователя часто поступали жалобы, в связи с чем он получил пометку Scam"
 }
 
-TYPE_LABELS = {
+TYPE_LABELS = _LabelDict({
     "major": "Major",
     "hold": "Hold",
     "sparkle": "Галочка",
     "custom": "Эмодзи",
-}
+})
 TYPE_LETTERS = {"major": "M", "hold": "H", "sparkle": "V", "custom": "E"}
 
 
-SUBTYPES = {
+SUBTYPES = _SubtypeDict({
     "user": ("Пользователь", "верифицирован", SPACE_USER),
     "bot": ("Бот", "верифицирован", SPACE_USER),
     "channel": ("Канал", "верифицирован", SPACE_CHAT),
     "group": ("Группа", "верифицирована", SPACE_CHAT),
-}
+})
 
 _MISSING = object()
 
@@ -129,7 +606,7 @@ _MISSING = object()
 def _verify_text(subtype, org=None):
     noun, verb, _ = SUBTYPES.get(subtype, SUBTYPES["user"])
     if org:
-        return "%s %s организацией «%s»" % (noun, verb, org)
+        return _T("%s %s организацией «%s»") % (noun, verb, org)
     return "%s %s" % (noun, verb)
 
 
@@ -361,6 +838,7 @@ class UnifiedPlugin(BasePlugin):
 
     def on_plugin_load(self):
         self._stop_evt.clear()
+        _set_lang(self.get_setting("lang", "auto"))
         self._load_custom_badges()
         self._load_history()
         self._load_supporters()
@@ -516,13 +994,13 @@ class UnifiedPlugin(BasePlugin):
 
                 context = last_fragment.getParentActivity()
                 builder = AlertDialogBuilder(context, AlertDialogBuilder.ALERT_TYPE_MESSAGE)
-                builder.set_title("LocalBadges успешно включен")
+                builder.set_title(_T("LocalBadges успешно включен"))
                 builder.set_message(
-                    "Спасибо, что установили LocalBadges! Плагин добавляет локальные бейджи, "
+                    _T("Спасибо, что установили LocalBadges! Плагин добавляет локальные бейджи, "
                     "scam-пометки и другие значки для официальных лиц.\n\n"
                     "Обновления плагина и другие полезные плагины для "
                     "exteraGram публикуются в нашем канале @HysteriaPlugins.\n\n"
-                    "Подпишитесь, чтобы не пропустить новые версии и бейджи!"
+                    "Подпишитесь, чтобы не пропустить новые версии и бейджи!")
                 )
 
                 def _on_join(d, w):
@@ -540,8 +1018,8 @@ class UnifiedPlugin(BasePlugin):
                         pass
                     _mark_seen()
 
-                builder.set_positive_button("Подписаться", _on_join)
-                builder.set_negative_button("Не показывать снова", _on_decline)
+                builder.set_positive_button(_T("Подписаться"), _on_join)
+                builder.set_negative_button(_T("Не показывать снова"), _on_decline)
                 builder.set_cancelable(True)
                 builder.set_canceled_on_touch_outside(False)
                 builder.show()
@@ -636,7 +1114,7 @@ class UnifiedPlugin(BasePlugin):
             except Exception:
                 pass
         self._refresh_ui()
-        self._toast("Изменение отменено", "success")
+        self._toast(_T("Изменение отменено"), "success")
 
     def _hist_clear(self):
         self._history = []
@@ -649,16 +1127,16 @@ class UnifiedPlugin(BasePlugin):
     def _export_badges(self):
         import json
         if not self._custom_badges:
-            self._toast("Нечего экспортировать: бейджей нет", "error")
+            self._toast(_T("Нечего экспортировать: бейджей нет"), "error")
             return
         try:
             from android.content import ClipData
             payload = json.dumps({"app": "LocalBadges", "version": 1, "badges": self._custom_badges},
                                  ensure_ascii=False)
             self._clipboard().setPrimaryClip(ClipData.newPlainText("LocalBadges", payload))
-            self._toast("Скопировано в буфер: %d шт." % len(self._custom_badges), "success")
+            self._toast(_T("Скопировано в буфер: %d шт.") % len(self._custom_badges), "success")
         except Exception as e:
-            self._toast("Не удалось скопировать: %s" % e, "error")
+            self._toast(_T("Не удалось скопировать: %s") % e, "error")
 
     @staticmethod
     def _clean_badge(key, data):
@@ -695,9 +1173,9 @@ class UnifiedPlugin(BasePlugin):
             if isinstance(raw, dict) and isinstance(raw.get("badges"), dict):
                 raw = raw["badges"]
             if not isinstance(raw, dict):
-                raise ValueError("формат")
+                raise ValueError(_T("формат"))
         except Exception:
-            self._toast("В буфере нет данных LocalBadges", "error")
+            self._toast(_T("В буфере нет данных LocalBadges"), "error")
             return
         changes, added = {}, {}
         for key, data in list(raw.items())[:500]:
@@ -706,12 +1184,12 @@ class UnifiedPlugin(BasePlugin):
                 changes[k] = dict(self._custom_badges[k]) if k in self._custom_badges else None
                 added[k] = clean
         if not added:
-            self._toast("Подходящих бейджей в буфере не найдено", "error")
+            self._toast(_T("Подходящих бейджей в буфере не найдено"), "error")
             return
         self._custom_badges.update(added)
         self._save_custom_badges()
         self._rebuild_badges()
-        self._hist_add("import", changes, "%d шт." % len(added))
+        self._hist_add("import", changes, _T("%d шт.") % len(added))
         for key in added:
             try:
                 space, oid = self._split_key(key)
@@ -720,7 +1198,7 @@ class UnifiedPlugin(BasePlugin):
                 pass
         self._refresh_ui()
         self._mgr_refresh()
-        self._toast("Импортировано бейджей: %d" % len(added), "success")
+        self._toast(_T("Импортировано бейджей: %d") % len(added), "success")
 
     def _get_local_badges(self, uid):
         if not uid:
@@ -775,7 +1253,7 @@ class UnifiedPlugin(BasePlugin):
         hidden = bool(self.get_setting("badges_hidden", False))
         now = time.time()
         timed = {}
-        badges = [] if hidden else list(BUILTIN_BADGES)
+        badges = [] if hidden else [dict(b, description=_T(b["description"])) for b in BUILTIN_BADGES]
         if hidden:
             self._custom_view = {}
         else:
@@ -802,6 +1280,7 @@ class UnifiedPlugin(BasePlugin):
         if not hidden:
             for uid in SUPPORTERS:
                 badge = SUPPORTER_BADGE.copy()
+                badge["description"] = _T(badge["description"])
                 badge["value"] = uid.strip()
                 badges.append(badge)
             for uid, until in self._sup_list:
@@ -809,10 +1288,12 @@ class UnifiedPlugin(BasePlugin):
                     continue
                 active.add(uid)
                 badge = SUPPORTER_BADGE.copy()
+                badge["description"] = _T(badge["description"])
                 badge["value"] = str(uid)
                 badges.append(badge)
             for uid in SCAMMERS:
                 badge = SCAMMER_BADGE.copy()
+                badge["description"] = _T(badge["description"])
                 badge["value"] = uid.strip()
                 badges.append(badge)
             badges.extend(self._get_local_badges(self._cur_uid(force=True)))
@@ -1146,25 +1627,25 @@ class UnifiedPlugin(BasePlugin):
         self._rebuild_badges()
         self._hist_add("edit" if prev else "add", {key: prev}, self._custom_badges[key].get("name") or key)
         self._after_change(space, oid)
-        self._toast("Бейдж сохранён: %s" % (self._custom_badges[key].get("name") or key), "success")
+        self._toast(_T("Бейдж сохранён: %s") % (self._custom_badges[key].get("name") or key), "success")
 
     def _remove_badge(self, space, oid):
         key = self._key(space, oid)
         if key not in self._custom_badges:
-            self._toast("У этого объекта нет кастомного бейджа", "error")
+            self._toast(_T("У этого объекта нет кастомного бейджа"), "error")
             return
         prev = self._custom_badges.pop(key)
         self._save_custom_badges()
         self._rebuild_badges()
         self._hist_add("remove", {key: dict(prev)}, prev.get("name") or key)
         self._after_change(space, oid)
-        self._toast("Бейдж удалён", "success")
+        self._toast(_T("Бейдж удалён"), "success")
 
     def _clear_all_badges(self):
         keys = list(self._custom_badges.keys())
         if not keys:
             return
-        self._hist_add("clear", {k: dict(v) for k, v in self._custom_badges.items()}, "%d шт." % len(keys))
+        self._hist_add("clear", {k: dict(v) for k, v in self._custom_badges.items()}, _T("%d шт.") % len(keys))
         self._custom_badges = {}
         self._save_custom_badges()
         self._rebuild_badges()
@@ -1176,7 +1657,7 @@ class UnifiedPlugin(BasePlugin):
                 pass
         self._refresh_ui()
         self._mgr_refresh()
-        self._toast("Все кастомные бейджи удалены", "success")
+        self._toast(_T("Все кастомные бейджи удалены"), "success")
 
     def _apply_local_now(self):
         self._rebuild_badges()
@@ -1236,19 +1717,19 @@ class UnifiedPlugin(BasePlugin):
         try:
             fragment = ctx.get("fragment")
             if fragment is None:
-                self._toast("Не удалось получить профиль", "error")
+                self._toast(_T("Не удалось получить профиль"), "error")
                 return
             parent = fragment.getParentActivity()
             if parent is None:
-                self._toast("Ошибка: нет активности", "error")
+                self._toast(_T("Ошибка: нет активности"), "error")
                 return
             space, oid = self._target_from_fragment(fragment)
             if space is None:
-                self._toast("Не удалось определить объект (пользователь, бот, канал или группа)", "error")
+                self._toast(_T("Не удалось определить объект (пользователь, бот, канал или группа)"), "error")
                 return
             self._show_badge_dialog(parent, space, oid)
         except Exception as e:
-            self._toast(f"Ошибка: {str(e)}", "error")
+            self._toast(_T("Ошибка: ") + str(e), "error")
 
     def _on_chat_menu_click(self, ctx):
         try:
@@ -1281,14 +1762,14 @@ class UnifiedPlugin(BasePlugin):
             if space is None and fragment is not None:
                 space, oid = self._target_from_fragment(fragment)
             if space is None or parent is None:
-                self._toast("Не удалось определить чат", "error")
+                self._toast(_T("Не удалось определить чат"), "error")
                 return
             self._show_badge_dialog(parent, space, oid)
         except Exception as e:
-            self._toast(f"Ошибка: {str(e)}", "error")
+            self._toast(_T("Ошибка: ") + str(e), "error")
 
     def _space_label(self, space):
-        return "Пользователь / бот" if space == SPACE_USER else "Канал / группа"
+        return _T("Пользователь / бот") if space == SPACE_USER else _T("Канал / группа")
 
     def _show_badge_dialog(self, parent, space, oid, subtype=None):
         try:
@@ -1300,14 +1781,14 @@ class UnifiedPlugin(BasePlugin):
                 subtype = "user" if space == SPACE_USER else "channel"
             noun = SUBTYPES[subtype][0]
             name = self._describe(space, oid) or str(oid)
-            options = ["Major", "Hold", "Галочка (verified)", "Кастомный эмодзи"]
+            options = ["Major", "Hold", _T("Галочка (verified)"), _T("Кастомный эмодзи")]
             if current:
-                options.append("Удалить бейдж")
+                options.append(_T("Удалить бейдж"))
 
             builder = AlertDialogBuilder(parent)
             builder.set_title("Local Badges - %s" % name)
             if current:
-                builder.set_message("%s · ID %s\nСейчас: %s" % (noun, oid, TYPE_LABELS.get(current.get("type"), current.get("type"))))
+                builder.set_message(_T("%s · ID %s\nСейчас: %s") % (noun, oid, TYPE_LABELS.get(current.get("type"), current.get("type"))))
             else:
                 builder.set_message("%s · ID %s" % (noun, oid))
 
@@ -1324,19 +1805,19 @@ class UnifiedPlugin(BasePlugin):
                         self._manual_emoji(
                             parent,
                             lambda emoji_id: self._ask_text(
-                                parent, "Текст бейджа", "Текст под галочкой", default, False,
+                                parent, _T("Текст бейджа"), _T("Текст под галочкой"), default, False,
                                 lambda desc: self._set_badge(space, oid, "custom", emoji_id,
                                                              desc or _verify_text(subtype), name, subtype)))
                     elif which == 4:
                         self._remove_badge(space, oid)
                 except Exception as e:
-                    self._toast(f"Ошибка: {str(e)}", "error")
+                    self._toast(_T("Ошибка: ") + str(e), "error")
 
             builder.set_items(options, on_selected)
-            builder.set_negative_button("Отмена", None)
+            builder.set_negative_button(_T("Отмена"), None)
             builder.show()
         except Exception as e:
-            self._toast(f"Ошибка: {str(e)}", "error")
+            self._toast(_T("Ошибка: ") + str(e), "error")
 
     def _ask_text(self, parent, title, hint, default, numeric, on_ok, message=None):
         try:
@@ -1357,20 +1838,20 @@ class UnifiedPlugin(BasePlugin):
             if message:
                 builder.set_message(message)
             builder.set_view(layout)
-            builder.set_positive_button("Применить", lambda d, w: on_ok(str(et.getText()).strip()))
-            builder.set_negative_button("Отмена", None)
+            builder.set_positive_button(_T("Применить"), lambda d, w: on_ok(str(et.getText()).strip()))
+            builder.set_negative_button(_T("Отмена"), None)
             builder.show()
         except Exception as e:
-            self._toast(f"Ошибка: {str(e)}", "error")
+            self._toast(_T("Ошибка: ") + str(e), "error")
 
     def _manual_emoji(self, parent, on_done):
         def _ok(text):
             text = (text or "").strip()
             if not text.isdigit():
-                self._toast("ID эмодзи - только цифры", "error")
+                self._toast(_T("ID эмодзи - только цифры"), "error")
                 return
             on_done(text)
-        self._ask_text(parent, "ID эмодзи", "document_id", "", True, _ok)
+        self._ask_text(parent, _T("ID эмодзи"), "document_id", "", True, _ok)
 
     def _resolve_username(self, username):
         try:
@@ -1395,8 +1876,8 @@ class UnifiedPlugin(BasePlugin):
         except Exception as e:
             self._log(f"settings screen: {e}")
         return [Text(
-            text="Настройки LocalBadges",
-            subtext="Бейджи, обновления и информация о плагине",
+            text=_T("Настройки LocalBadges"),
+            subtext=_T("Бейджи, обновления и информация о плагине"),
             icon="msg_settings",
             on_click=lambda v: self._show_page("home"),
         )]
@@ -1599,7 +2080,7 @@ class UnifiedPlugin(BasePlugin):
     def _header(self, ctx, pal, title, subtitle=None, back=None):
         box = self._vbox(ctx)
         if back is not None:
-            back_tv = self._tv(ctx, "‹  Назад", 15, pal["primary"], True)
+            back_tv = self._tv(ctx, _T("‹  Назад"), 15, pal["primary"], True)
             back_tv.setPadding(0, _dp(2), _dp(12), _dp(10))
             back_tv.setClickable(True)
             back_tv.setOnClickListener(_Click(lambda v: back()))
@@ -1733,15 +2214,15 @@ class UnifiedPlugin(BasePlugin):
                 else:
                     root = self._page_root(ctx)
                     titles = {
-                        "manager": ("Управление бейджами", "Выдача, изменение и удаление"),
-                        "assign": (("Массовая выдача" if self._asg.get("bulk") else
-                                    ("Изменить бейдж" if self._asg.get("key") else "Новый бейдж")),
-                                   "Настройте значок и подпись"),
-                        "supporter": ("Supporter", "Бейдж за поддержку проекта"),
-                        "history": ("Журнал изменений", "Последние %d действий" % self.HISTORY_MAX),
-                        "local": ("Мои бейджи", "Видны только в вашем профиле"),
-                        "updates": ("Обновления", "Версия v%s" % __version__),
-                        "about": ("О плагине", "LocalBadges"),
+                        "manager": (_T("Управление бейджами"), _T("Выдача, изменение и удаление")),
+                        "assign": ((_T("Массовая выдача") if self._asg.get("bulk") else
+                                    (_T("Изменить бейдж") if self._asg.get("key") else _T("Новый бейдж"))),
+                                   _T("Настройте значок и подпись")),
+                        "supporter": ("Supporter", _T("Бейдж за поддержку проекта")),
+                        "history": (_T("Журнал изменений"), _T("Последние %d действий") % self.HISTORY_MAX),
+                        "local": (_T("Мои бейджи"), _T("Видны только в вашем профиле")),
+                        "updates": (_T("Обновления"), _T("Версия v%s") % __version__),
+                        "about": (_T("О плагине"), "LocalBadges"),
                     }
                     title, subtitle = titles.get(name, (name, None))
                     back_to = "manager" if name in ("assign", "history") else "home"
@@ -1752,41 +2233,47 @@ class UnifiedPlugin(BasePlugin):
                 self._sheet_show(ctx, content, pal)
             except Exception as e:
                 self._log(f"show page {name}: {e}")
-                self._toast(f"Ошибка: {e}", "error")
+                self._toast(_T("Ошибка: ") + str(e), "error")
         run_on_ui_thread(_go)
 
     def _local_summary(self):
         names = []
         for key, label in (("local_badge_type_major", "Major"), ("local_badge_type_hold", "Hold"),
-                           ("local_badge_type_sparkle", "Галочка"), ("local_badge_type_custom", "Эмодзи")):
+                           ("local_badge_type_sparkle", _T("Галочка")), ("local_badge_type_custom", _T("Эмодзи"))):
             if self.get_setting(key, False):
                 names.append(label)
-        return ", ".join(names) if names else "Выключены"
+        return ", ".join(names) if names else _T("Выключены")
 
     def _build_home(self, ctx, pal):
         root = self._page_root(ctx)
-        root.addView(self._header(ctx, pal, "LocalBadges", "Настройки"), _lp(-1, -2, None, (0, 0, 0, 14)))
+        root.addView(self._header(ctx, pal, "LocalBadges", _T("Настройки")), _lp(-1, -2, None, (0, 0, 0, 14)))
 
         hero = self._card(ctx, pal, 20)
         hero.setPadding(_dp(16), _dp(14), _dp(16), _dp(14))
-        hero.addView(self._tv(ctx, "Локальные бейджи и пометки", 20, pal["on_surface"], True))
-        hero.addView(self._tv(ctx, "Всё видно только в вашем клиенте, на сервер ничего не отправляется", 13,
+        hero.addView(self._tv(ctx, _T("Локальные бейджи и пометки"), 20, pal["on_surface"], True))
+        hero.addView(self._tv(ctx, _T("Всё видно только в вашем клиенте, на сервер ничего не отправляется"), 13,
                               pal["on_surface_variant"]), _lp(-2, -2, None, (0, 2, 0, 6)))
         root.addView(hero, _lp(-1, -2, None, (0, 0, 0, 16)))
 
-        sec, card = self._section(ctx, pal, "Видимость")
-        card.addView(self._switch_row(ctx, pal, "Скрыть все бейджи", "Ничего не удаляется, бейджи просто не показываются",
+        sec, card = self._section(ctx, pal, _T("Видимость"))
+        card.addView(self._switch_row(ctx, pal, _T("Скрыть все бейджи"), _T("Ничего не удаляется, бейджи просто не показываются"),
                                       self.get_setting("badges_hidden", False), self._set_hidden))
         root.addView(sec, _lp(-1, -2, None, (0, 0, 0, 16)))
 
+        sec, card = self._section(ctx, pal, _T("Язык"))
+        langs = [(code, _T("Авто") if name is None else name) for code, name in LANG_CHOICES]
+        card.addView(self._chip_row(ctx, pal, langs, self.get_setting("lang", "auto"), self._pick_lang, per_row=4, size=13),
+                     _lp(-1, -2, None, (12, 10, 12, 10)))
+        root.addView(sec, _lp(-1, -2, None, (0, 0, 0, 16)))
+
         mine, _until = self._my_supporter()
-        sec, card = self._section(ctx, pal, "Разделы")
+        sec, card = self._section(ctx, pal, _T("Разделы"))
         items = (
-            ("Управление бейджами", "Выдано: %d" % len(self._custom_badges), "manager"),
-            ("Мои бейджи", self._local_summary(), "local"),
-            ("Supporter", "Активен" if mine else "Поддержать разработку", "supporter"),
-            ("Обновления", "Версия v%s" % __version__, "updates"),
-            ("О плагине", "Автор и канал", "about"),
+            (_T("Управление бейджами"), _T("Выдано: %d") % len(self._custom_badges), "manager"),
+            (_T("Мои бейджи"), self._local_summary(), "local"),
+            ("Supporter", _T("Активен") if mine else _T("Поддержать разработку"), "supporter"),
+            (_T("Обновления"), _T("Версия v%s") % __version__, "updates"),
+            (_T("О плагине"), _T("Автор и канал"), "about"),
         )
         for i, (title, sub, page) in enumerate(items):
             if i:
@@ -1804,7 +2291,7 @@ class UnifiedPlugin(BasePlugin):
             self._log(f"save setting {key}: {e}")
 
     def _page_local(self, ctx, pal, root):
-        sec, card = self._section(ctx, pal, "Тип бейджа")
+        sec, card = self._section(ctx, pal, _T("Тип бейджа"))
 
         def _toggle(key):
             def _fn(value):
@@ -1815,8 +2302,8 @@ class UnifiedPlugin(BasePlugin):
         rows = (
             ("local_badge_type_major", "Major", None),
             ("local_badge_type_hold", "Hold", None),
-            ("local_badge_type_sparkle", "Галочка (verified)", None),
-            ("local_badge_type_custom", "Кастомный эмодзи", "Нужен ID эмодзи ниже"),
+            ("local_badge_type_sparkle", _T("Галочка (verified)"), None),
+            ("local_badge_type_custom", _T("Кастомный эмодзи"), _T("Нужен ID эмодзи ниже")),
         )
         for i, (key, title, sub) in enumerate(rows):
             if i:
@@ -1824,7 +2311,7 @@ class UnifiedPlugin(BasePlugin):
             card.addView(self._switch_row(ctx, pal, title, sub, self.get_setting(key, False), _toggle(key)))
         root.addView(sec, _lp(-1, -2, None, (0, 0, 0, 16)))
 
-        sec, card = self._section(ctx, pal, "Оформление")
+        sec, card = self._section(ctx, pal, _T("Оформление"))
 
         def _saver(key):
             def _fn(text):
@@ -1833,10 +2320,10 @@ class UnifiedPlugin(BasePlugin):
                     self._apply_local_now()
             return _fn
 
-        card.addView(self._field(ctx, pal, "ID кастомного эмодзи (document_id)",
+        card.addView(self._field(ctx, pal, _T("ID кастомного эмодзи (document_id)"),
                                  self.get_setting("local_badge_custom_emoji_id", ""),
                                  _saver("local_badge_custom_emoji_id"), numeric=True))
-        card.addView(self._field(ctx, pal, "Текст под галочкой в профиле",
+        card.addView(self._field(ctx, pal, _T("Текст под галочкой в профиле"),
                                  self.get_setting("local_badge_description", ""),
                                  _saver("local_badge_description")))
         root.addView(sec, _lp(-1, -2))
@@ -1937,17 +2424,17 @@ class UnifiedPlugin(BasePlugin):
 
     def _mgr_render(self, ctx, pal, holder):
         holder.removeAllViews()
-        holder.addView(self._chip_row(ctx, pal, self._FILTERS, self._mgr_f, self._mgr_pick_filter),
+        holder.addView(self._chip_row(ctx, pal, [(k, _T(v)) for k, v in self._FILTERS], self._mgr_f, self._mgr_pick_filter),
                        _lp(-1, -2, None, (0, 0, 0, 12)))
         items = self._mgr_filtered()
         total = len(self._custom_badges)
         filtered = bool((self._mgr_q or "").strip()) or self._mgr_f != "all"
-        title = ("Найдено: %d из %d" % (len(items), total)) if filtered else ("Выданные бейджи (%d)" % total)
+        title = (_T("Найдено: %d из %d") % (len(items), total)) if filtered else (_T("Выданные бейджи (%d)") % total)
         sec, card = self._section(ctx, pal, title)
         if not items:
-            card.addView(self._row(ctx, pal, "Ничего не найдено" if filtered else "Пока пусто",
-                                   "Измените запрос или фильтр" if filtered
-                                   else "Добавьте бейдж кнопкой выше или через меню профиля"))
+            card.addView(self._row(ctx, pal, _T("Ничего не найдено") if filtered else _T("Пока пусто"),
+                                   _T("Измените запрос или фильтр") if filtered
+                                   else _T("Добавьте бейдж кнопкой выше или через меню профиля")))
         for i, (key, data, space, oid) in enumerate(items[:self._mgr_limit]):
             if i:
                 card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
@@ -1956,27 +2443,27 @@ class UnifiedPlugin(BasePlugin):
             if data.get("description"):
                 sub += "\n" + str(data.get("description"))
             if data.get("custom_emoji_id"):
-                sub += "\nЭмодзи: %s" % data.get("custom_emoji_id")
+                sub += _T("\nЭмодзи: %s") % data.get("custom_emoji_id")
             exp = int(data.get("until") or 0)
             if exp:
-                sub += "\n" + ("Срок истёк %s" % self._fmt_until(exp) if exp <= time.time()
-                               else "Действует до %s" % self._fmt_until(exp))
+                sub += "\n" + (_T("Срок истёк %s") % self._fmt_until(exp) if exp <= time.time()
+                               else _T("Действует до %s") % self._fmt_until(exp))
             card.addView(self._row(ctx, pal, data.get("name") or ("ID %d" % oid), sub,
                                    (lambda k=key: self._assign_start(k)),
                                    chevron=True, letter=TYPE_LETTERS.get(data.get("type"), "?")))
         holder.addView(sec, _lp(-1, -2))
         if len(items) > self._mgr_limit:
-            holder.addView(self._button(ctx, pal, "Показать ещё (%d)" % (len(items) - self._mgr_limit),
+            holder.addView(self._button(ctx, pal, _T("Показать ещё (%d)") % (len(items) - self._mgr_limit),
                                         self._mgr_more, "tonal"), _lp(-1, -2, None, (0, 10, 0, 0)))
         self._sheet_refit(ctx)
 
     def _page_manager(self, ctx, pal, root):
-        root.addView(self._button(ctx, pal, "Добавить бейдж", lambda: self._assign_start(None)),
+        root.addView(self._button(ctx, pal, _T("Добавить бейдж"), lambda: self._assign_start(None)),
                      _lp(-1, -2, None, (0, 0, 0, 8)))
-        root.addView(self._button(ctx, pal, "Массовая выдача", lambda: self._assign_start(None, True), "tonal"),
+        root.addView(self._button(ctx, pal, _T("Массовая выдача"), lambda: self._assign_start(None, True), "tonal"),
                      _lp(-1, -2, None, (0, 0, 0, 10)))
         if len(self._custom_badges) > 5:
-            root.addView(self._field(ctx, pal, "Поиск (имя, ID, подпись)", self._mgr_q, lambda t: None,
+            root.addView(self._field(ctx, pal, _T("Поиск (имя, ID, подпись)"), self._mgr_q, lambda t: None,
                                      on_change=self._mgr_search_changed),
                          _lp(-1, -2, None, (-14, 0, -14, 4)))
         else:
@@ -1986,26 +2473,26 @@ class UnifiedPlugin(BasePlugin):
         self._mgr_holder = (ctx, pal, holder)
         self._mgr_render(ctx, pal, holder)
 
-        sec, card = self._section(ctx, pal, "Резервная копия")
-        card.addView(self._row(ctx, pal, "Экспорт в буфер обмена", "Все выданные бейджи одним JSON-текстом",
+        sec, card = self._section(ctx, pal, _T("Резервная копия"))
+        card.addView(self._row(ctx, pal, _T("Экспорт в буфер обмена"), _T("Все выданные бейджи одним JSON-текстом"),
                                self._export_badges))
         card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
-        card.addView(self._row(ctx, pal, "Импорт из буфера обмена", "Добавит и обновит бейджи из скопированного JSON",
+        card.addView(self._row(ctx, pal, _T("Импорт из буфера обмена"), _T("Добавит и обновит бейджи из скопированного JSON"),
                                self._import_badges))
         card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
-        card.addView(self._row(ctx, pal, "Журнал изменений",
-                               "Записей: %d · можно откатить" % len(self._history),
+        card.addView(self._row(ctx, pal, _T("Журнал изменений"),
+                               _T("Записей: %d · можно откатить") % len(self._history),
                                lambda: self._show_page("history"), chevron=True))
         root.addView(sec, _lp(-1, -2, None, (0, 0, 0, 14)))
 
         if self._custom_badges:
             self._confirm_clear = False
-            btn = self._button(ctx, pal, "Удалить все бейджи", lambda: None, "danger")
+            btn = self._button(ctx, pal, _T("Удалить все бейджи"), lambda: None, "danger")
 
             def _clear_click(v=None):
                 if not self._confirm_clear:
                     self._confirm_clear = True
-                    btn.setText("Нажмите ещё раз - удалить все (%d)" % len(self._custom_badges))
+                    btn.setText(_T("Нажмите ещё раз - удалить все (%d)") % len(self._custom_badges))
                     return
                 self._confirm_clear = False
                 self._clear_all_badges()
@@ -2094,9 +2581,9 @@ class UnifiedPlugin(BasePlugin):
         lead.setBackground(_rounded(pal["primary_container"], 24))
         row.addView(lead, _lp(_dp(48), _dp(48), None, (0, 0, 14, 0)))
         col = self._vbox(ctx)
-        name = a.get("name") or (a.get("q") or "").strip() or "Имя в профиле"
+        name = a.get("name") or (a.get("q") or "").strip() or _T("Имя в профиле")
         if a.get("bulk"):
-            name = "Объектов: %d" % len(self._bulk_tokens(a.get("q") or ""))
+            name = _T("Объектов: %d") % len(self._bulk_tokens(a.get("q") or ""))
         title_row = _LL(ctx)
         title_row.setOrientation(_LL.HORIZONTAL)
         title_row.setGravity(_Gravity.CENTER_VERTICAL)
@@ -2108,15 +2595,15 @@ class UnifiedPlugin(BasePlugin):
         kind = TYPE_LABELS.get(a["type"], a["type"])
         if a["type"] == "custom" and a.get("emoji"):
             kind += " · " + a["emoji"]
-        col.addView(self._tv(ctx, "Значок: %s" % kind, 12, pal["primary"]), _lp(-2, -2, None, (0, 4, 0, 0)))
+        col.addView(self._tv(ctx, _T("Значок: %s") % kind, 12, pal["primary"]), _lp(-2, -2, None, (0, 4, 0, 0)))
         dur = a.get("dur", "0")
         if dur == "keep" and a.get("cur_until"):
-            term = "до %s" % self._fmt_until(a["cur_until"])
+            term = _T("до %s") % self._fmt_until(a["cur_until"])
         elif dur in ("", "0", "keep"):
-            term = "бессрочно"
+            term = _T("бессрочно")
         else:
-            term = "%s дн." % dur
-        col.addView(self._tv(ctx, "Срок: %s" % term, 12, pal["on_surface_variant"]), _lp(-2, -2, None, (0, 2, 0, 0)))
+            term = _T("%s дн.") % dur
+        col.addView(self._tv(ctx, _T("Срок: %s") % term, 12, pal["on_surface_variant"]), _lp(-2, -2, None, (0, 2, 0, 0)))
         row.addView(col, _lp(0, -2, 1))
         card.addView(row)
         return card
@@ -2129,53 +2616,53 @@ class UnifiedPlugin(BasePlugin):
         editing = bool(a.get("key"))
 
         if editing:
-            sec, card = self._section(ctx, pal, "Объект")
+            sec, card = self._section(ctx, pal, _T("Объект"))
             card.addView(self._row(ctx, pal, a.get("name") or ("ID %d" % a["oid"]),
                                    "%s · ID %d" % (SUBTYPES.get(a["subtype"], ("",))[0], a["oid"])))
             kinds = [(k, SUBTYPES[k][0]) for k in SUBTYPES if SUBTYPES[k][2] == a["space"]]
         elif a.get("bulk"):
-            sec, card = self._section(ctx, pal, "Кому")
-            card.addView(self._field(ctx, pal, "ID или @username, по одному на строку", a.get("q", ""),
+            sec, card = self._section(ctx, pal, _T("Кому"))
+            card.addView(self._field(ctx, pal, _T("ID или @username, по одному на строку"), a.get("q", ""),
                                      lambda t: self._asg.__setitem__("q", t), multiline=True))
             kinds = [(k, SUBTYPES[k][0]) for k in SUBTYPES]
         else:
-            sec, card = self._section(ctx, pal, "Кому")
-            card.addView(self._field(ctx, pal, "ID или @username", a.get("q", ""),
+            sec, card = self._section(ctx, pal, _T("Кому"))
+            card.addView(self._field(ctx, pal, _T("ID или @username"), a.get("q", ""),
                                      lambda t: self._asg.__setitem__("q", t)))
             kinds = [(k, SUBTYPES[k][0]) for k in SUBTYPES]
         root.addView(sec, _lp(-1, -2, None, (0, 0, 0, 12)))
-        root.addView(self._tv(ctx, "Тип объекта", 13, pal["on_surface_variant"]), _lp(-2, -2, None, (4, 0, 0, 6)))
+        root.addView(self._tv(ctx, _T("Тип объекта"), 13, pal["on_surface_variant"]), _lp(-2, -2, None, (4, 0, 0, 6)))
         root.addView(self._chip_row(ctx, pal, kinds, a["subtype"], lambda v: self._asg_set(subtype=v), per_row=2),
                      _lp(-1, -2, None, (0, 0, 0, 4)))
 
-        root.addView(self._tv(ctx, "Значок", 13, pal["on_surface_variant"]), _lp(-2, -2, None, (4, 4, 0, 6)))
+        root.addView(self._tv(ctx, _T("Значок"), 13, pal["on_surface_variant"]), _lp(-2, -2, None, (4, 4, 0, 6)))
         root.addView(self._chip_row(ctx, pal, [(k, TYPE_LABELS[k]) for k in ("major", "hold", "sparkle", "custom")],
                                     a["type"], lambda v: self._asg_set(type=v), per_row=4, size=13),
                      _lp(-1, -2, None, (0, 0, 0, 4)))
 
-        root.addView(self._tv(ctx, "Срок действия", 13, pal["on_surface_variant"]), _lp(-2, -2, None, (4, 4, 0, 6)))
-        durs = list(self.DURATIONS)
+        root.addView(self._tv(ctx, _T("Срок действия"), 13, pal["on_surface_variant"]), _lp(-2, -2, None, (4, 4, 0, 6)))
+        durs = [(k, _T(v)) for k, v in self.DURATIONS]
         if a.get("key") and a.get("cur_until"):
-            durs.insert(0, ("keep", "Как сейчас"))
+            durs.insert(0, ("keep", _T("Как сейчас")))
         root.addView(self._chip_row(ctx, pal, durs, a.get("dur", "0"), lambda v: self._asg_set(dur=v),
                                     per_row=len(durs) if len(durs) <= 4 else 3, size=13),
                      _lp(-1, -2, None, (0, 0, 0, 4)))
 
-        sec, card = self._section(ctx, pal, "Оформление")
+        sec, card = self._section(ctx, pal, _T("Оформление"))
         if a["type"] == "custom":
-            card.addView(self._field(ctx, pal, "ID кастомного эмодзи (document_id)", a.get("emoji", ""),
+            card.addView(self._field(ctx, pal, _T("ID кастомного эмодзи (document_id)"), a.get("emoji", ""),
                                      lambda t: self._asg.__setitem__("emoji", t), numeric=True))
-        card.addView(self._field(ctx, pal, "Текст под галочкой в профиле", a.get("desc", ""), self._asg_set_desc))
+        card.addView(self._field(ctx, pal, _T("Текст под галочкой в профиле"), a.get("desc", ""), self._asg_set_desc))
         root.addView(sec, _lp(-1, -2, None, (0, 8, 0, 14)))
 
-        root.addView(self._tv(ctx, "Предпросмотр", 14, pal["primary"], True), _lp(-2, -2, None, (4, 0, 4, 8)))
+        root.addView(self._tv(ctx, _T("Предпросмотр"), 14, pal["primary"], True), _lp(-2, -2, None, (4, 0, 4, 8)))
         root.addView(self._asg_preview(ctx, pal), _lp(-1, -2, None, (0, 0, 0, 16)))
 
-        root.addView(self._button(ctx, pal, "Сохранить", self._assign_save), _lp(-1, -2, None, (0, 0, 0, 8)))
-        root.addView(self._button(ctx, pal, "Отмена", lambda: self._show_page("manager"), "outlined"),
+        root.addView(self._button(ctx, pal, _T("Сохранить"), self._assign_save), _lp(-1, -2, None, (0, 0, 0, 8)))
+        root.addView(self._button(ctx, pal, _T("Отмена"), lambda: self._show_page("manager"), "outlined"),
                      _lp(-1, -2, None, (0, 0, 0, 8)))
         if editing:
-            root.addView(self._button(ctx, pal, "Удалить бейдж", self._assign_delete, "danger"), _lp(-1, -2))
+            root.addView(self._button(ctx, pal, _T("Удалить бейдж"), self._assign_delete, "danger"), _lp(-1, -2))
 
     @staticmethod
     def _bulk_tokens(text):
@@ -2190,12 +2677,12 @@ class UnifiedPlugin(BasePlugin):
         a = self._asg
         tokens = self._bulk_tokens(a.get("q"))
         if not tokens:
-            self._toast("Вставьте ID или @username", "error")
+            self._toast(_T("Вставьте ID или @username"), "error")
             return
         btype = a["type"]
         emoji = str(a.get("emoji") or "").strip()
         if btype == "custom" and not emoji.isdigit():
-            self._toast("ID эмодзи - только цифры", "error")
+            self._toast(_T("ID эмодзи - только цифры"), "error")
             return
         changes, bad, done = {}, [], 0
         until_ts = self._asg_until() or 0
@@ -2233,11 +2720,11 @@ class UnifiedPlugin(BasePlugin):
             }
             done += 1
         if not done:
-            self._toast("Ничего не выдано: не найдено %s" % ", ".join(bad[:3]), "error")
+            self._toast(_T("Ничего не выдано: не найдено %s") % ", ".join(bad[:3]), "error")
             return
         self._save_custom_badges()
         self._rebuild_badges()
-        self._hist_add("bulk", changes, "%d шт." % done)
+        self._hist_add("bulk", changes, _T("%d шт.") % done)
         for key in changes:
             try:
                 space, oid = self._split_key(key)
@@ -2245,9 +2732,9 @@ class UnifiedPlugin(BasePlugin):
             except Exception:
                 pass
         self._refresh_ui()
-        msg = "Выдано: %d" % done
+        msg = _T("Выдано: %d") % done
         if bad:
-            msg += ", не найдено: %d (%s)" % (len(bad), ", ".join(bad[:3]))
+            msg += _T(", не найдено: %d (%s)") % (len(bad), ", ".join(bad[:3]))
         self._toast(msg, "success" if not bad else "info")
         self._show_page("manager")
 
@@ -2271,12 +2758,12 @@ class UnifiedPlugin(BasePlugin):
         else:
             text = (a.get("q") or "").strip()
             if not text:
-                self._toast("Укажите ID или @username", "error")
+                self._toast(_T("Укажите ID или @username"), "error")
                 return
             if text.startswith("@") or not re.match(r"^-?\d+$", text):
                 space, oid, detected = self._resolve_username(text.lstrip("@").strip())
                 if space is None:
-                    self._toast("@%s не найден в кэше клиента. Откройте профиль или укажите ID" % text.lstrip("@"),
+                    self._toast(_T("@%s не найден в кэше клиента. Откройте профиль или укажите ID") % text.lstrip("@"),
                                 "error")
                     return
                 subtype = detected or subtype
@@ -2289,7 +2776,7 @@ class UnifiedPlugin(BasePlugin):
         btype = a["type"]
         emoji = str(a.get("emoji") or "").strip()
         if btype == "custom" and not emoji.isdigit():
-            self._toast("ID эмодзи - только цифры", "error")
+            self._toast(_T("ID эмодзи - только цифры"), "error")
             return
         a["subtype"] = subtype
         desc = a.get("desc") or self._asg_auto()
@@ -2303,31 +2790,31 @@ class UnifiedPlugin(BasePlugin):
 
     def _page_history(self, ctx, pal, root):
         if not self._history:
-            sec, card = self._section(ctx, pal, "Журнал")
-            card.addView(self._row(ctx, pal, "Пока пусто", "Здесь появятся выдача, изменения и удаления"))
+            sec, card = self._section(ctx, pal, _T("Журнал"))
+            card.addView(self._row(ctx, pal, _T("Пока пусто"), _T("Здесь появятся выдача, изменения и удаления")))
             root.addView(sec, _lp(-1, -2))
             return
-        sec, card = self._section(ctx, pal, "Записи (%d)" % len(self._history))
+        sec, card = self._section(ctx, pal, _T("Записи (%d)") % len(self._history))
         for i, e in enumerate(self._history):
             if i:
                 card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
             n = len(e.get("c") or {})
-            title = self._ACTION_LABELS.get(e.get("a"), "Изменение")
+            title = _T(self._ACTION_LABELS.get(e.get("a"), "Изменение"))
             if e.get("n"):
                 title += ": " + str(e.get("n"))
             try:
                 when = time.strftime("%d.%m %H:%M", time.localtime(int(e.get("t", 0))))
             except Exception:
                 when = ""
-            row = self._row(ctx, pal, title, "%s · объектов: %d" % (when, n))
-            undo = self._tv(ctx, "Откатить", 14, pal["primary"], True)
+            row = self._row(ctx, pal, title, _T("%s · объектов: %d") % (when, n))
+            undo = self._tv(ctx, _T("Откатить"), 14, pal["primary"], True)
             undo.setPadding(_dp(12), _dp(8), _dp(4), _dp(8))
             undo.setClickable(True)
             undo.setOnClickListener(_Click(lambda v, idx=i: self._hist_undo_ui(idx)))
             row.addView(undo, _lp(-2, -2, None, (8, 0, 0, 0)))
             card.addView(row)
         root.addView(sec, _lp(-1, -2, None, (0, 0, 0, 14)))
-        root.addView(self._button(ctx, pal, "Очистить журнал", self._hist_clear_ui, "outlined"), _lp(-1, -2))
+        root.addView(self._button(ctx, pal, _T("Очистить журнал"), self._hist_clear_ui, "outlined"), _lp(-1, -2))
 
     def _hist_undo_ui(self, idx):
         self._hist_undo(idx)
@@ -2339,60 +2826,60 @@ class UnifiedPlugin(BasePlugin):
 
     def _page_supporter(self, ctx, pal, root):
         mine, until = self._my_supporter()
-        sec, card = self._section(ctx, pal, "Статус")
+        sec, card = self._section(ctx, pal, _T("Статус"))
         if mine:
-            sub = "Бессрочно" if not until else "Действует до %s" % time.strftime("%d.%m.%Y", time.localtime(until))
+            sub = _T("Бессрочно") if not until else _T("Действует до %s") % time.strftime("%d.%m.%Y", time.localtime(until))
             since = self._sup_since.get(self._cur_uid(), 0)
             if since:
-                sub += ", с %s" % time.strftime("%d.%m.%Y", time.localtime(since))
-            card.addView(self._row(ctx, pal, "Вы Supporter", sub, letter="S"))
+                sub += _T(", с %s") % time.strftime("%d.%m.%Y", time.localtime(since))
+            card.addView(self._row(ctx, pal, _T("Вы Supporter"), sub, letter="S"))
         else:
-            card.addView(self._row(ctx, pal, "Бейдж не оформлен",
-                                   "Навсегда за 50 ⭐ в боте @BadgesPayBot", letter="S"))
+            card.addView(self._row(ctx, pal, _T("Бейдж не оформлен"),
+                                   _T("Навсегда за 50 ⭐ в боте @BadgesPayBot"), letter="S"))
         root.addView(sec, _lp(-1, -2, None, (0, 0, 0, 14)))
         if not mine:
-            root.addView(self._button(ctx, pal, "Купить навсегда за 50 ⭐", lambda: self._open_support_bot("plugin")),
+            root.addView(self._button(ctx, pal, _T("Купить навсегда за 50 ⭐"), lambda: self._open_support_bot("plugin")),
                          _lp(-1, -2, None, (0, 0, 0, 8)))
-        root.addView(self._button(ctx, pal, "Подарить Supporter", lambda: self._open_support_bot("gift"), "tonal"),
+        root.addView(self._button(ctx, pal, _T("Подарить Supporter"), lambda: self._open_support_bot("gift"), "tonal"),
                      _lp(-1, -2, None, (0, 0, 0, 8)))
-        root.addView(self._button(ctx, pal, "Ввести промокод", lambda: self._open_support_bot("redeem"), "tonal"),
+        root.addView(self._button(ctx, pal, _T("Ввести промокод"), lambda: self._open_support_bot("redeem"), "tonal"),
                      _lp(-1, -2, None, (0, 0, 0, 8)))
-        root.addView(self._button(ctx, pal, "История в боте", lambda: self._open_support_bot("history"), "tonal"),
+        root.addView(self._button(ctx, pal, _T("История в боте"), lambda: self._open_support_bot("history"), "tonal"),
                      _lp(-1, -2, None, (0, 0, 0, 8)))
-        root.addView(self._button(ctx, pal, "Обновить список", self._manual_supporters_refresh, "tonal"),
+        root.addView(self._button(ctx, pal, _T("Обновить список"), self._manual_supporters_refresh, "tonal"),
                      _lp(-1, -2, None, (0, 0, 0, 14)))
-        sec, card = self._section(ctx, pal, "Как это работает")
-        card.addView(self._row(ctx, pal, "Бейдж видят все", "У всех, у кого установлен LocalBadges"))
+        sec, card = self._section(ctx, pal, _T("Как это работает"))
+        card.addView(self._row(ctx, pal, _T("Бейдж видят все"), _T("У всех, у кого установлен LocalBadges")))
         card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
-        card.addView(self._row(ctx, pal, "Появляется сам", "Список обновляется раз в час, после оплаты можно нажать «Обновить список»"))
+        card.addView(self._row(ctx, pal, _T("Появляется сам"), _T("Список обновляется раз в час, после оплаты можно нажать «Обновить список»")))
         card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
-        card.addView(self._row(ctx, pal, "Подарки и промокоды", "Кнопки выше открывают бота: подарок другу, ввод промокода, история покупок"))
+        card.addView(self._row(ctx, pal, _T("Подарки и промокоды"), _T("Кнопки выше открывают бота: подарок другу, ввод промокода, история покупок")))
         root.addView(sec, _lp(-1, -2))
 
     def _page_updates(self, ctx, pal, root):
-        sec, card = self._section(ctx, pal, "Версия")
-        card.addView(self._row(ctx, pal, "Текущая версия", "v%s" % __version__))
+        sec, card = self._section(ctx, pal, _T("Версия"))
+        card.addView(self._row(ctx, pal, _T("Текущая версия"), "v%s" % __version__))
         card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
-        card.addView(self._row(ctx, pal, "Автопроверка", "Раз в 2 часа"))
+        card.addView(self._row(ctx, pal, _T("Автопроверка"), _T("Раз в 2 часа")))
         root.addView(sec, _lp(-1, -2, None, (0, 0, 0, 14)))
-        root.addView(self._button(ctx, pal, "Проверить обновления сейчас", lambda: self._manual_update_check(), "tonal"),
+        root.addView(self._button(ctx, pal, _T("Проверить обновления сейчас"), lambda: self._manual_update_check(), "tonal"),
                      _lp(-1, -2))
 
     def _page_about(self, ctx, pal, root):
-        sec, card = self._section(ctx, pal, "Плагин")
-        card.addView(self._row(ctx, pal, "LocalBadges", "Версия %s" % __version__))
+        sec, card = self._section(ctx, pal, _T("Плагин"))
+        card.addView(self._row(ctx, pal, "LocalBadges", _T("Версия %s") % __version__))
         card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
-        card.addView(self._row(ctx, pal, "Автор", "@oystrix"))
+        card.addView(self._row(ctx, pal, _T("Автор"), "@oystrix"))
         card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
-        card.addView(self._row(ctx, pal, "Канал", "@HysteriaPlugins", lambda: self._open_channel(), chevron=True))
+        card.addView(self._row(ctx, pal, _T("Канал"), "@HysteriaPlugins", lambda: self._open_channel(), chevron=True))
         root.addView(sec, _lp(-1, -2, None, (0, 0, 0, 14)))
-        sec, card = self._section(ctx, pal, "Возможности")
+        sec, card = self._section(ctx, pal, _T("Возможности"))
         feats = (
-            ("Локальные бейджи для себя", "Major, Hold, галочка, кастомный эмодзи"),
-            ("Бейджи для других", "Пользователи, боты, каналы и группы"),
-            ("Встроенные бейджи", "Для официальных лиц и каналов"),
-            ("Пометка Scam", "Для пользователей с жалобами"),
-            ("Supporter", "Бейдж за поддержку проекта через бота"),
+            (_T("Локальные бейджи для себя"), _T("Major, Hold, галочка, кастомный эмодзи")),
+            (_T("Бейджи для других"), _T("Пользователи, боты, каналы и группы")),
+            (_T("Встроенные бейджи"), _T("Для официальных лиц и каналов")),
+            (_T("Пометка Scam"), _T("Для пользователей с жалобами")),
+            ("Supporter", _T("Бейдж за поддержку проекта через бота")),
         )
         for i, (t, s) in enumerate(feats):
             if i:
@@ -2466,16 +2953,11 @@ class UnifiedPlugin(BasePlugin):
         try:
             if not SUPPORTERS_URL.startswith("https://"):
                 return
-            req = urllib.request.Request(SUPPORTERS_URL)
-            req.add_header("User-Agent", "LocalBadges/{}".format(__version__))
-            resp = urllib.request.urlopen(req, timeout=8)
-            body = resp.read(SUPPORTERS_MAX_BYTES + 1)
-            if len(body) > SUPPORTERS_MAX_BYTES:
-                raise ValueError("список слишком большой")
+            body = self._http_get(SUPPORTERS_URL, 8, SUPPORTERS_MAX_BYTES)
             parsed = json.loads(body.decode("utf-8"))
             lst = self._parse_supporters(parsed)
             if lst is None:
-                raise ValueError("неверный формат")
+                raise ValueError(_T("неверный формат"))
             since = self._parse_since(parsed)
             changed = lst != list(self._sup_list) or since != self._sup_since
             self._sup_list = lst
@@ -2486,11 +2968,11 @@ class UnifiedPlugin(BasePlugin):
                                                                    "since": {str(k): v for k, v in since.items()}}))
                 run_on_ui_thread(self._after_supporters)
             if manual:
-                self._toast("Список Supporter обновлён" if changed else "Список Supporter актуален", "success")
+                self._toast(_T("Список Supporter обновлён") if changed else _T("Список Supporter актуален"), "success")
         except Exception as e:
             self._log(f"supporters: {e}")
             if manual:
-                self._toast("Не удалось обновить список: {}".format(e), "error")
+                self._toast(_T("Не удалось обновить список: {}").format(e), "error")
         finally:
             self._sup_busy = False
 
@@ -2526,7 +3008,7 @@ class UnifiedPlugin(BasePlugin):
         threading.Thread(target=_loop, name="LocalBadgesSupporters", daemon=True).start()
 
     def _manual_supporters_refresh(self):
-        self._toast("Обновляю список…")
+        self._toast(_T("Обновляю список…"))
         threading.Thread(target=lambda: self._fetch_supporters(manual=True),
                          name="LocalBadgesSupportersManual", daemon=True).start()
 
@@ -2549,6 +3031,20 @@ class UnifiedPlugin(BasePlugin):
         except Exception as e:
             self._log(f"open bot: {e}")
 
+    def _pick_lang(self, code):
+        self._save_setting("lang", code)
+        _set_lang(code)
+        self._rebuild_badges()
+        for key in list(self._plans):
+            try:
+                space, oid = self._split_key(key)
+                self._touch(space, oid)
+            except Exception:
+                pass
+        self._refresh_ui()
+        self._show_page("home")
+        self._toast(_T("Язык изменён"))
+
     def _set_hidden(self, value):
         self._save_setting("badges_hidden", bool(value))
         self._rebuild_badges()
@@ -2560,7 +3056,7 @@ class UnifiedPlugin(BasePlugin):
                 except Exception:
                     pass
         self._refresh_ui()
-        self._toast("Все бейджи скрыты" if value else "Бейджи снова показываются")
+        self._toast(_T("Все бейджи скрыты") if value else _T("Бейджи снова показываются"))
 
     def _start_update_check(self):
         def _loop():
@@ -2577,13 +3073,38 @@ class UnifiedPlugin(BasePlugin):
 
         threading.Thread(target=_loop, name="LocalBadgesUpdate", daemon=True).start()
 
-    def _fetch_latest_version(self):
+    @staticmethod
+    def _sources(raw_url):
+        name = raw_url.rsplit("/", 1)[1]
+        return (
+            (raw_url, {}),
+            ("https://api.github.com/repos/%s/contents/%s?ref=%s" % (GITHUB_REPO, name, GITHUB_BRANCH),
+             {"Accept": "application/vnd.github.raw+json"}),
+            ("https://cdn.jsdelivr.net/gh/%s@%s/%s" % (GITHUB_REPO, GITHUB_BRANCH, name), {}),
+            ("https://raw.githack.com/%s/%s/%s" % (GITHUB_REPO, GITHUB_BRANCH, name), {}),
+        )
+
+    def _http_get(self, raw_url, timeout=8, limit=2 * 1024 * 1024):
         import urllib.request
+        last = None
+        for url, headers in self._sources(raw_url):
+            try:
+                req = urllib.request.Request(url)
+                req.add_header("User-Agent", "LocalBadges/{}".format(__version__))
+                for k, v in headers.items():
+                    req.add_header(k, v)
+                body = urllib.request.urlopen(req, timeout=timeout).read(limit + 1)
+                if len(body) > limit:
+                    raise ValueError(_T("файл слишком большой"))
+                return body
+            except Exception as e:
+                last = e
+                self._log("get %s: %s" % (url.split("/")[2], e))
+        raise last if last else ValueError(_T("нет источников"))
+
+    def _fetch_latest_version(self):
         import json
-        req = urllib.request.Request(GITHUB_META_URL)
-        req.add_header('User-Agent', 'LocalBadges/{}'.format(__version__))
-        response = urllib.request.urlopen(req, timeout=5)
-        data = json.loads(response.read().decode('utf-8'))
+        data = json.loads(self._http_get(GITHUB_META_URL, 6, 65536).decode('utf-8'))
         return str(data.get("version", "0.0.0"))
 
     def _check_for_updates(self, manual=False):
@@ -2591,21 +3112,21 @@ class UnifiedPlugin(BasePlugin):
             latest_version = self._fetch_latest_version()
         except Exception as e:
             if manual:
-                self._toast("Не удалось проверить обновления: {}".format(e), "error")
+                self._toast(_T("Не удалось проверить обновления: {}").format(e), "error")
             return
 
         if _ver_tuple(latest_version) > _ver_tuple(__version__):
             run_on_ui_thread(lambda: BulletinHelper.show_with_button(
-                "Доступна новая версия v{}! Обновить?".format(latest_version),
-                0, "Обновить",
+                _T("Доступна новая версия v{}! Обновить?").format(latest_version),
+                0, _T("Обновить"),
                 lambda: self._download_update(latest_version),
                 None, 10000
             ))
         elif manual:
-            self._toast("У вас последняя версия: v{}".format(__version__), "success")
+            self._toast(_T("У вас последняя версия: v{}").format(__version__), "success")
 
     def _manual_update_check(self):
-        self._toast("Проверяю обновления…")
+        self._toast(_T("Проверяю обновления…"))
         threading.Thread(target=lambda: self._check_for_updates(manual=True),
                          name="LocalBadgesManualUpdate", daemon=True).start()
 
@@ -2613,20 +3134,17 @@ class UnifiedPlugin(BasePlugin):
         import urllib.request
 
         try:
-            req = urllib.request.Request(GITHUB_RAW_URL)
-            req.add_header('User-Agent', 'LocalBadges/{}'.format(__version__))
-            response = urllib.request.urlopen(req, timeout=10)
-            new_content = response.read().decode('utf-8')
+            new_content = self._http_get(GITHUB_RAW_URL, 10).decode('utf-8')
 
             with open(__file__, 'w', encoding='utf-8') as f:
                 f.write(new_content)
 
             run_on_ui_thread(lambda: BulletinHelper.show_success(
-                "Плагин обновлён до версии v{}! Перезагрузи его.".format(version)
+                _T("Плагин обновлён до версии v{}! Перезагрузи его.").format(version)
             ))
         except Exception as e:
             run_on_ui_thread(lambda: BulletinHelper.show_error(
-                "Ошибка обновления: {}".format(str(e))
+                _T("Ошибка обновления: {}").format(str(e))
             ))
 
 
