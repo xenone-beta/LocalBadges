@@ -1,4 +1,4 @@
-ImportError re
+import re
 import threading
 import time
 from typing import Any, List
@@ -526,7 +526,7 @@ BUILTIN_BADGES = [
         "space": "u",
         "value": "5074845818",
         "type": "custom",
-        "custom_emoji_id": "5424669052058511745",
+        "custom_emoji_id": "5444965061749644170",
         "description": "Разработчик LocalBadges"
     },
     {
