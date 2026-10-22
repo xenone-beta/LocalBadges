@@ -6,7 +6,7 @@
 
 Помечайте пользователей, ботов, каналы и группы любым значком: видите его только вы, на серверах Telegram ничего не меняется.
 
-[![Версия](https://img.shields.io/badge/версия-0.1.57-2ea44f?style=flat-square)](version.json)
+[![Версия](https://img.shields.io/badge/версия-0.1.51-2ea44f?style=flat-square)](version.json)
 [![exteraGram](https://img.shields.io/badge/exteraGram-12.1.1%2B-3b82f6?style=flat-square)](#установка)
 [![Канал](https://img.shields.io/badge/канал-@HysteriaPlugins-229ed9?style=flat-square&logo=telegram&logoColor=white)](https://t.me/HysteriaPlugins)
 [![Supporter](https://img.shields.io/badge/Supporter-50%20%E2%AD%90-f5a623?style=flat-square)](https://t.me/BadgesPayBot)
@@ -30,6 +30,7 @@
 | **Встроенные метки** | Официальные лица и каналы, пометка Scam для пользователей с жалобами |
 | **Supporter** | Бейдж за поддержку проекта, который видят все пользователи плагина |
 | **Автообновление** | Плагин сам проверяет новую версию раз в пару часов |
+| **Три языка** | Русский, украинский и английский; язык выбирается кнопкой в настройках или определяется автоматически |
 
 Настройки в стиле Material 3. Диалоги в профилях и чатах оставлены простыми, как в самом клиенте.
 
