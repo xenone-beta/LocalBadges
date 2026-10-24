@@ -40,6 +40,13 @@ SPACE_CHAT = "c"
 
 _I18N = {
     "en": {
+        "Канал является официальным ресурсом MillBrawl": "The channel is an official MillBrawl resource",
+        "Выдайте первый бейдж в разделе «Управление бейджами»": "Issue your first badge in “Manage badges”",
+        "Последний бейдж": "Latest badge",
+        "Скрыты": "Hidden",
+        "Вкл": "On",
+        "Скоро истекут": "Expiring soon",
+        "Выдано": "Issued",
         "Официальный канал HysteriaPlugins": "Official HysteriaPlugins channel",
         "Разработчик LocalBadges": "LocalBadges developer",
         "Официальный бот HysteriaPlugins": "Official HysteriaPlugins bot",
@@ -161,18 +168,18 @@ _I18N = {
         "Срок: %s": "Duration: %s",
         "Объект": "Object",
         "Кому": "For",
-        "ID или @username, по одному на строку": "ID or @username, one per line",
-        "ID или @username": "ID or @username",
+        "ID, @username или ссылка t.me, по одному на строку": "ID, @username or t.me link, one per line",
+        "ID, @username или ссылка t.me": "ID, @username or t.me link",
         "Тип объекта": "Object type",
         "Значок": "Icon",
         "Срок действия": "Validity period",
         "Как сейчас": "Keep current",
         "Предпросмотр": "Preview",
         "Сохранить": "Save",
-        "Вставьте ID или @username": "Paste an ID or @username",
+        "Вставьте ID, @username или ссылку t.me": "Paste an ID, @username or t.me link",
         "Ничего не выдано: не найдено %s": "Nothing issued: %s not found",
         ", не найдено: %d (%s)": ", not found: %d (%s)",
-        "Укажите ID или @username": "Enter an ID or @username",
+        "Укажите ID, @username или ссылку t.me": "Enter an ID, @username or t.me link",
         "@%s не найден в кэше клиента. Откройте профиль или укажите ID": "@%s was not found in the client cache. Open the profile or enter an ID",
         "Выдан": "Issued",
         "Изменён": "Edited",
@@ -240,9 +247,33 @@ _I18N = {
         "Язык": "Language",
         "Авто": "Auto",
         "Язык интерфейса плагина": "Plugin interface language",
+        "Официальный бот оплаты бейджей": "Official badges payment bot",
+        "Экспорт в файл": "Export to file",
+        "Импорт из файла": "Import from file",
+        "Сохранит JSON в папку Загрузки": "Saves JSON to the Downloads folder",
+        "Загрузит бейджи из JSON в папке Загрузки": "Loads badges from a JSON in the Downloads folder",
+        "Сохранено в Загрузки: %s": "Saved to Downloads: %s",
+        "Не удалось сохранить файл: %s": "Could not save the file: %s",
+        "Файл не найден в Загрузках": "File not found in Downloads",
+        "Импортировано из файла: %d": "Imported from file: %d",
+        "Не удалось прочитать файл: %s": "Could not read the file: %s",
+        "Истекает бейдж у %s": "Badge expiring for %s",
+        "Истёк бейдж у %s": "Badge expired for %s",
+        "Скоро истекает (%s)": "Expiring soon (%s)",
+        "ID эмодзи для галочки (необязательно)": "Emoji ID for the checkmark (optional)",
+        "Кастомная иконка галочки": "Custom checkmark icon",
+        "Подменяет стандартную галочку на кастомный эмодзи": "Replaces the standard checkmark with a custom emoji",
+        "Уведомления об истечении": "Expiration notifications",
+        "Показывать, когда бейдж скоро истечёт": "Show when a badge is about to expire",
         "Язык изменён": "Language changed",
     },
     "uk": {
+        "Выдайте первый бейдж в разделе «Управление бейджами»": "Видайте перший бейдж у розділі «Керування бейджами»",
+        "Последний бейдж": "Останній бейдж",
+        "Скрыты": "Приховано",
+        "Вкл": "Увімк.",
+        "Скоро истекут": "Скоро закінчаться",
+        "Выдано": "Видано",
         "Официальный канал HysteriaPlugins": "Офіційний канал HysteriaPlugins",
         "Разработчик LocalBadges": "Розробник LocalBadges",
         "Официальный бот HysteriaPlugins": "Офіційний бот HysteriaPlugins",
@@ -365,18 +396,18 @@ _I18N = {
         "Срок: %s": "Термін: %s",
         "Объект": "Об’єкт",
         "Кому": "Кому",
-        "ID или @username, по одному на строку": "ID або @username, по одному на рядок",
-        "ID или @username": "ID або @username",
+        "ID, @username или ссылка t.me, по одному на строку": "ID, @username або посилання t.me, по одному на рядок",
+        "ID, @username или ссылка t.me": "ID, @username або посилання t.me",
         "Тип объекта": "Тип об’єкта",
         "Значок": "Значок",
         "Срок действия": "Строк дії",
         "Как сейчас": "Як зараз",
         "Предпросмотр": "Попередній перегляд",
         "Сохранить": "Зберегти",
-        "Вставьте ID или @username": "Вставте ID або @username",
+        "Вставьте ID, @username или ссылку t.me": "Вставте ID, @username або посилання t.me",
         "Ничего не выдано: не найдено %s": "Нічого не видано: не знайдено %s",
         ", не найдено: %d (%s)": ", не знайдено: %d (%s)",
-        "Укажите ID или @username": "Вкажіть ID або @username",
+        "Укажите ID, @username или ссылку t.me": "Вкажіть ID, @username або посилання t.me",
         "@%s не найден в кэше клиента. Откройте профиль или укажите ID": "@%s не знайдено в кеші клієнта. Відкрийте профіль або вкажіть ID",
         "Выдан": "Видано",
         "Изменён": "Змінено",
@@ -444,6 +475,24 @@ _I18N = {
         "Язык": "Мова",
         "Авто": "Авто",
         "Язык интерфейса плагина": "Мова інтерфейсу плагіна",
+        "Официальный бот оплаты бейджей": "Офіційний бот оплати бейджів",
+        "Экспорт в файл": "Експорт у файл",
+        "Импорт из файла": "Імпорт з файлу",
+        "Сохранит JSON в папку Загрузки": "Збереже JSON у папку Завантаження",
+        "Загрузит бейджи из JSON в папке Загрузки": "Завантажить бейджі з JSON у папці Завантаження",
+        "Сохранено в Загрузки: %s": "Збережено в Завантаження: %s",
+        "Не удалось сохранить файл: %s": "Не вдалося зберегти файл: %s",
+        "Файл не найден в Загрузках": "Файл не знайдено в Завантаженнях",
+        "Импортировано из файла: %d": "Імпортовано з файлу: %d",
+        "Не удалось прочитать файл: %s": "Не вдалося прочитати файл: %s",
+        "Истекает бейдж у %s": "Закінчується бейдж у %s",
+        "Истёк бейдж у %s": "Закінчився бейдж у %s",
+        "Скоро истекает (%s)": "Скоро закінчується (%s)",
+        "ID эмодзи для галочки (необязательно)": "ID емодзі для галочки (необов’язково)",
+        "Кастомная иконка галочки": "Власна іконка галочки",
+        "Подменяет стандартную галочку на кастомный эмодзи": "Замінює стандартну галочку на власне емодзі",
+        "Уведомления об истечении": "Сповіщення про закінчення",
+        "Показывать, когда бейдж скоро истечёт": "Показувати, коли бейдж скоро закінчиться",
         "Язык изменён": "Мову змінено",
     },
 }
@@ -552,6 +601,14 @@ BUILTIN_BADGES = [
         "type": "custom",
         "custom_emoji_id": "5247213725080890199",
         "description": "Пользователь предоставил идею для обновления v0.1.4"
+    },
+    {
+        "kind": "id",
+        "space": "u",
+        "value": "8891099323",
+        "type": "custom",
+        "custom_emoji_id": "5240131869470661067",
+        "description": "Официальный бот оплаты бейджей"
     }
 ]
 
@@ -598,6 +655,36 @@ SUBTYPES = _SubtypeDict({
     "channel": ("Канал", "верифицирован", SPACE_CHAT),
     "group": ("Группа", "верифицирована", SPACE_CHAT),
 })
+
+_TME_RE = re.compile(r"^(?:https?://)?(?:www\.)?(?:t|telegram)\.(?:me|dog)/(.+)$", re.I)
+_TME_SKIP = ("joinchat", "addstickers", "addemoji", "share", "proxy", "socks", "setlanguage", "addtheme", "boost",
+             "iv", "login", "confirmphone", "addlist", "m", "invoice", "giftcode", "contact", "c")
+
+
+def _norm_target(token):
+    t = str(token or "").strip().strip("<>()[]\"'")
+    if not t:
+        return ""
+    m = re.match(r"^tg://resolve\?(?:.*&)?domain=([A-Za-z0-9_]{3,})", t, re.I)
+    if m:
+        return "@" + m.group(1)
+    m = re.match(r"^tg://user\?(?:.*&)?id=(\d+)", t, re.I)
+    if m:
+        return m.group(1)
+    m = _TME_RE.match(t)
+    if not m:
+        return t
+    path = m.group(1).split("?")[0].split("#")[0].strip("/")
+    parts = path.split("/")
+    head = parts[0]
+    if head.lower() == "c" and len(parts) > 1 and parts[1].isdigit():
+        return "-100" + parts[1]
+    if not head or head.startswith("+") or head.lower() in _TME_SKIP:
+        return ""
+    if re.fullmatch(r"[A-Za-z0-9_]{3,}", head):
+        return "@" + head
+    return ""
+
 
 _MISSING = object()
 
@@ -832,7 +919,10 @@ class UnifiedPlugin(BasePlugin):
         self._sheet = None
         self._sheet_wrap = None
         self._sheet_sv = None
+        self._sheet_outer = None
         self._sheet_page = ""
+        self._nav_dir = 0
+        self._exp_state = {}
         self._fields = []
 
     def on_plugin_load(self):
@@ -1123,19 +1213,120 @@ class UnifiedPlugin(BasePlugin):
         from org.telegram.messenger import ApplicationLoader
         return ApplicationLoader.applicationContext.getSystemService("clipboard")
 
-    def _export_badges(self):
+    def _export_payload(self):
         import json
+        return json.dumps({"app": "LocalBadges", "version": 1, "badges": self._custom_badges},
+                          ensure_ascii=False)
+
+    def _export_badges(self):
         if not self._custom_badges:
             self._toast(_T("Нечего экспортировать: бейджей нет"), "error")
             return
         try:
             from android.content import ClipData
-            payload = json.dumps({"app": "LocalBadges", "version": 1, "badges": self._custom_badges},
-                                 ensure_ascii=False)
+            payload = self._export_payload()
             self._clipboard().setPrimaryClip(ClipData.newPlainText("LocalBadges", payload))
             self._toast(_T("Скопировано в буфер: %d шт.") % len(self._custom_badges), "success")
         except Exception as e:
             self._toast(_T("Не удалось скопировать: %s") % e, "error")
+
+    def _downloads_dir(self):
+        try:
+            from android.os import Environment
+            d = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            if d is not None:
+                path = str(d.getAbsolutePath())
+                from java.io import File as JFile
+                jf = JFile(path)
+                if not jf.exists():
+                    jf.mkdirs()
+                return path
+        except Exception as e:
+            self._log("downloads dir: %s" % e)
+        try:
+            from org.telegram.messenger import ApplicationLoader
+            return str(ApplicationLoader.applicationContext.getExternalFilesDir(None).getAbsolutePath())
+        except Exception:
+            return "/sdcard/Download"
+
+    def _export_to_file(self):
+        if not self._custom_badges:
+            self._toast(_T("Нечего экспортировать: бейджей нет"), "error")
+            return
+        try:
+            folder = self._downloads_dir()
+            name = "LocalBadges_backup_%s.json" % time.strftime("%Y%m%d_%H%M%S")
+            path = folder.rstrip("/") + "/" + name
+            payload = self._export_payload()
+            from java.io import FileOutputStream
+            fos = FileOutputStream(path)
+            try:
+                fos.write(payload.encode("utf-8"))
+            finally:
+                fos.close()
+            self._toast(_T("Сохранено в Загрузки: %s") % name, "success")
+        except Exception as e:
+            self._toast(_T("Не удалось сохранить файл: %s") % e, "error")
+
+    def _import_from_file(self):
+        import json
+        import os
+        try:
+            folder = self._downloads_dir()
+            candidates = []
+            try:
+                from java.io import File as JFile
+                d = JFile(folder)
+                files = d.listFiles()
+                if files is not None:
+                    for f in files:
+                        n = str(f.getName() or "")
+                        if n.startswith("LocalBadges") and n.endswith(".json") and f.isFile():
+                            candidates.append((int(f.lastModified()), str(f.getAbsolutePath()), n))
+            except Exception:
+                try:
+                    for n in os.listdir(folder):
+                        if n.startswith("LocalBadges") and n.endswith(".json"):
+                            p = os.path.join(folder, n)
+                            candidates.append((os.path.getmtime(p), p, n))
+                except Exception:
+                    pass
+            if not candidates:
+                self._toast(_T("Файл не найден в Загрузках"), "error")
+                return
+            candidates.sort(reverse=True)
+            path = candidates[0][1]
+            with open(path, "r", encoding="utf-8") as fh:
+                text = fh.read()
+            raw = json.loads(text)
+            if isinstance(raw, dict) and isinstance(raw.get("badges"), dict):
+                raw = raw["badges"]
+            if not isinstance(raw, dict):
+                raise ValueError(_T("формат"))
+            changes, added = {}, {}
+            for key, data in list(raw.items())[:500]:
+                k, clean = self._clean_badge(key, data)
+                if k is not None:
+                    changes[k] = dict(self._custom_badges[k]) if k in self._custom_badges else None
+                    added[k] = clean
+            if not added:
+                self._toast(_T("Подходящих бейджей в буфере не найдено"), "error")
+                return
+            self._custom_badges.update(added)
+            self._save_custom_badges()
+            self._rebuild_badges()
+            self._hist_add("import", changes, _T("%d шт.") % len(added))
+            for key in added:
+                try:
+                    space, oid = self._split_key(key)
+                    self._touch(space, oid)
+                except Exception:
+                    pass
+            self._refresh_ui()
+            self._mgr_refresh()
+            self._toast(_T("Импортировано из файла: %d") % len(added), "success")
+        except Exception as e:
+            self._toast(_T("Не удалось прочитать файл: %s") % e, "error")
 
     @staticmethod
     def _clean_badge(key, data):
@@ -1313,9 +1504,13 @@ class UnifiedPlugin(BasePlugin):
         for key, items in groups.items():
             sparkle = False
             chosen = None
+            sparkle_emoji = None
             for b in items:
-                if b.get("type", "major") == "sparkle":
+                t = b.get("type", "major")
+                if t == "sparkle":
                     sparkle = True
+                    if b.get("custom_emoji_id"):
+                        sparkle_emoji = b.get("custom_emoji_id")
                 else:
                     chosen = b
             bv = None
@@ -1323,8 +1518,16 @@ class UnifiedPlugin(BasePlugin):
             if chosen is not None:
                 icon = _icon_for(chosen.get("type"), chosen.get("custom_emoji_id"))
                 bv = self._make_bv(key.split(":", 1)[1], icon, chosen.get("description", ""), chosen.get("type"))
+            elif sparkle and sparkle_emoji:
+                icon = _icon_for("custom", sparkle_emoji)
+                desc = ""
+                for b in items:
+                    if b.get("type") == "sparkle":
+                        desc = b.get("description", "")
+                        break
+                bv = self._make_bv(key.split(":", 1)[1], icon, desc, "sparkle")
             plans[key] = (bv, icon, sparkle)
-            sigs[key] = (sparkle, icon, str(chosen.get("description", "")) if chosen else "")
+            sigs[key] = (sparkle, icon, str(chosen.get("description", "")) if chosen else (str(sparkle_emoji or "")))
 
         for key in list(self._patched.keys()):
             if sigs.get(key) != self._plan_sigs.get(key):
@@ -1923,6 +2126,52 @@ class UnifiedPlugin(BasePlugin):
         box.addView(card, _lp(-1, -2))
         return box, card
 
+    def _expander(self, ctx, pal, title, key):
+        box = self._vbox(ctx)
+        head = _LL(ctx)
+        head.setOrientation(_LL.HORIZONTAL)
+        head.setGravity(_Gravity.CENTER_VERTICAL)
+        head.setPadding(_dp(4), _dp(2), _dp(4), _dp(8))
+        head.addView(self._tv(ctx, title, 14, pal["primary"], True), _lp(0, -2, 1))
+        arrow = self._tv(ctx, "▾", 16, pal["primary"], True)
+        head.addView(arrow, _lp(-2, -2))
+        box.addView(head, _lp(-1, -2))
+        card = self._card(ctx, pal)
+        box.addView(card, _lp(-1, -2))
+        opened = bool(self._exp_state.get(key, False))
+        card.setVisibility(_View.VISIBLE if opened else _View.GONE)
+        try:
+            arrow.setRotation(0.0 if opened else -90.0)
+        except Exception:
+            pass
+
+        def toggle(v):
+            now_open = not bool(self._exp_state.get(key, False))
+            self._exp_state[key] = now_open
+            try:
+                from android.transition import TransitionManager, ChangeBounds
+                t = ChangeBounds()
+                t.setDuration(220)
+                TransitionManager.beginDelayedTransition(box, t)
+            except Exception:
+                pass
+            card.setVisibility(_View.VISIBLE if now_open else _View.GONE)
+            try:
+                arrow.animate().rotation(0.0 if now_open else -90.0).setDuration(180).start()
+                if now_open:
+                    card.setAlpha(0.0)
+                    card.animate().alpha(1.0).setDuration(240).start()
+            except Exception:
+                card.setAlpha(1.0)
+            try:
+                self._sheet_refit(ctx)
+            except Exception:
+                pass
+
+        head.setClickable(True)
+        head.setOnClickListener(_Click(toggle))
+        return box, card
+
     def _divider(self, ctx, pal):
         line = _View(ctx)
         line.setBackgroundColor(pal["outline_variant"])
@@ -2140,13 +2389,20 @@ class UnifiedPlugin(BasePlugin):
         if self._sheet_alive():
             try:
                 lp = self._sheet_wrap.getLayoutParams()
+                try:
+                    from android.transition import TransitionManager, ChangeBounds
+                    t = ChangeBounds()
+                    t.addTarget(self._sheet_wrap)
+                    t.setDuration(260)
+                    TransitionManager.beginDelayedTransition(self._sheet_outer, t)
+                except Exception:
+                    pass
                 lp.height = self._sheet_fit(ctx, content)
                 self._sheet_wrap.setLayoutParams(lp)
                 self._sheet_sv.removeAllViews()
                 self._sheet_sv.addView(content)
                 self._sheet_sv.scrollTo(0, 0)
-                content.setAlpha(0.0)
-                content.animate().alpha(1.0).setDuration(200).start()
+                self._animate_page_in(content, self._nav_dir)
                 return
             except Exception as e:
                 self._log(f"sheet swap: {e}")
@@ -2184,7 +2440,7 @@ class UnifiedPlugin(BasePlugin):
         dm = ctx.getResources().getDisplayMetrics()
         wrap.setTranslationY(float(dm.heightPixels))
         d.show()
-        self._sheet, self._sheet_wrap, self._sheet_sv = d, wrap, sv
+        self._sheet, self._sheet_wrap, self._sheet_sv, self._sheet_outer = d, wrap, sv, outer
 
         def _slide():
             try:
@@ -2201,13 +2457,50 @@ class UnifiedPlugin(BasePlugin):
         self._sheet = None
         self._sheet_page = ""
 
+    _NAV_RANK = {"home": 0, "manager": 1, "local": 1, "supporter": 1, "updates": 1, "about": 1,
+                 "history": 2, "assign": 2, "": 0}
+
+    def _animate_page_in(self, content, direction):
+        try:
+            shift = float(_dp(36))
+            content.setAlpha(0.0)
+            content.setTranslationX(shift if direction > 0 else (-shift if direction < 0 else 0.0))
+            content.animate().alpha(1.0).translationX(0.0).setDuration(240).start()
+        except Exception:
+            try:
+                content.setAlpha(1.0)
+                content.setTranslationX(0.0)
+            except Exception:
+                pass
+            return
+        try:
+            count = int(content.getChildCount())
+        except Exception:
+            return
+        for i in range(1, min(count, 9)):
+            child = None
+            try:
+                child = content.getChildAt(i)
+                child.setAlpha(0.0)
+                child.setTranslationY(float(_dp(14)))
+                child.animate().alpha(1.0).translationY(0.0).setStartDelay(30 * i).setDuration(260).start()
+            except Exception:
+                try:
+                    if child is not None:
+                        child.setAlpha(1.0)
+                        child.setTranslationY(0.0)
+                except Exception:
+                    pass
+
     def _show_page(self, name):
         def _go():
             try:
                 self._flush_fields()
                 ctx = self._activity()
                 pal = _palette()
+                prev = self._sheet_page
                 self._sheet_page = name
+                self._nav_dir = self._NAV_RANK.get(name, 1) - self._NAV_RANK.get(prev, 0)
                 if name == "home":
                     content = self._build_home(ctx, pal)
                 else:
@@ -2243,16 +2536,92 @@ class UnifiedPlugin(BasePlugin):
                 names.append(label)
         return ", ".join(names) if names else _T("Выключены")
 
-    def _build_home(self, ctx, pal):
-        root = self._page_root(ctx)
-        root.addView(self._header(ctx, pal, "LocalBadges", _T("Настройки")), _lp(-1, -2, None, (0, 0, 0, 14)))
+    def _latest_badge(self):
+        for entry in self._history:
+            if entry.get("a") not in ("add", "edit", "bulk", "import"):
+                continue
+            for key in (entry.get("c") or {}):
+                data = self._custom_badges.get(key)
+                if isinstance(data, dict):
+                    return key, data
+        return None
 
+    def _stat_tile(self, ctx, pal, value, label, accent=False):
+        tile = self._vbox(ctx)
+        tile.setBackground(_rounded(pal["surface_container_highest"], 14))
+        tile.setPadding(_dp(12), _dp(10), _dp(12), _dp(10))
+        tile.addView(self._tv(ctx, value, 22, pal["error"] if accent else pal["on_surface"], True))
+        tile.addView(self._tv(ctx, label, 12, pal["on_surface_variant"]), _lp(-2, -2, None, (0, 3, 0, 0)))
+        return tile
+
+    def _badge_card(self, ctx, pal, key, data):
+        card = self._card(ctx, pal, 16, pal["surface_container_highest"])
+        row = _LL(ctx)
+        row.setOrientation(_LL.HORIZONTAL)
+        row.setGravity(_Gravity.CENTER_VERTICAL)
+        row.setPadding(_dp(12), _dp(10), _dp(12), _dp(10))
+        lead = self._tv(ctx, TYPE_LETTERS.get(data.get("type"), "?"), 15, pal["on_primary_container"], True)
+        lead.setGravity(_Gravity.CENTER)
+        lead.setBackground(_rounded(pal["primary_container"], 22))
+        row.addView(lead, _lp(_dp(42), _dp(42), None, (0, 0, 12, 0)))
+        col = self._vbox(ctx)
+        title_row = _LL(ctx)
+        title_row.setOrientation(_LL.HORIZONTAL)
+        title_row.setGravity(_Gravity.CENTER_VERTICAL)
+        title_row.addView(self._tv(ctx, data.get("name") or key, 16, pal["on_surface"], True))
+        title_row.addView(self._tv(ctx, "  ✔", 16, pal["primary"], True))
+        col.addView(title_row)
+        desc = str(data.get("description") or "")
+        if desc:
+            col.addView(self._tv(ctx, desc, 12, pal["on_surface_variant"]), _lp(-2, -2, None, (0, 2, 0, 0)))
+        until = int(data.get("until") or 0)
+        term = _T("до %s") % self._fmt_until(until) if until else _T("бессрочно")
+        col.addView(self._tv(ctx, "%s · %s" % (TYPE_LABELS.get(data.get("type"), data.get("type")), term), 12,
+                             pal["primary"]), _lp(-2, -2, None, (0, 3, 0, 0)))
+        row.addView(col, _lp(0, -2, 1))
+        card.addView(row)
+        _set_bg(row, _ripple(pal["surface_container_highest"], 14, pal["primary"]))
+        row.setClickable(True)
+        row.setOnClickListener(_Click(lambda v: self._show_page("manager")))
+        return card
+
+    def _hero(self, ctx, pal):
         hero = self._card(ctx, pal, 20)
         hero.setPadding(_dp(16), _dp(14), _dp(16), _dp(14))
         hero.addView(self._tv(ctx, _T("Локальные бейджи и пометки"), 20, pal["on_surface"], True))
         hero.addView(self._tv(ctx, _T("Всё видно только в вашем клиенте, на сервер ничего не отправляется"), 13,
-                              pal["on_surface_variant"]), _lp(-2, -2, None, (0, 2, 0, 6)))
-        root.addView(hero, _lp(-1, -2, None, (0, 0, 0, 16)))
+                              pal["on_surface_variant"]), _lp(-2, -2, None, (0, 2, 0, 10)))
+        latest = self._latest_badge()
+        if latest is not None:
+            hero.addView(self._tv(ctx, _T("Последний бейдж"), 12, pal["primary"], True), _lp(-2, -2, None, (2, 0, 0, 6)))
+            hero.addView(self._badge_card(ctx, pal, latest[0], latest[1]), _lp(-1, -2, None, (0, 0, 0, 10)))
+        else:
+            hero.addView(self._tv(ctx, _T("Выдайте первый бейдж в разделе «Управление бейджами»"), 13,
+                                  pal["on_surface_variant"]), _lp(-2, -2, None, (0, 0, 0, 10)))
+        now = time.time()
+        soon = 0
+        for data in self._custom_badges.values():
+            try:
+                until = int((data or {}).get("until") or 0)
+            except Exception:
+                continue
+            if until and now < until <= now + 3 * 86400:
+                soon += 1
+        hidden = bool(self.get_setting("badges_hidden", False))
+        stats = _LL(ctx)
+        stats.setOrientation(_LL.HORIZONTAL)
+        stats.addView(self._stat_tile(ctx, pal, str(len(self._custom_badges)), _T("Выдано")), _lp(0, -2, 1, (0, 0, 8, 0)))
+        stats.addView(self._stat_tile(ctx, pal, str(soon), _T("Скоро истекут"), soon > 0), _lp(0, -2, 1, (0, 0, 8, 0)))
+        stats.addView(self._stat_tile(ctx, pal, _T("Скрыты") if hidden else _T("Вкл"), _T("Видимость"), hidden),
+                      _lp(0, -2, 1))
+        hero.addView(stats, _lp(-1, -2))
+        return hero
+
+    def _build_home(self, ctx, pal):
+        root = self._page_root(ctx)
+        root.addView(self._header(ctx, pal, "LocalBadges", _T("Настройки")), _lp(-1, -2, None, (0, 0, 0, 14)))
+
+        root.addView(self._hero(ctx, pal), _lp(-1, -2, None, (0, 0, 0, 16)))
 
         sec, card = self._section(ctx, pal, _T("Видимость"))
         card.addView(self._switch_row(ctx, pal, _T("Скрыть все бейджи"), _T("Ничего не удаляется, бейджи просто не показываются"),
@@ -2325,6 +2694,13 @@ class UnifiedPlugin(BasePlugin):
         card.addView(self._field(ctx, pal, _T("Текст под галочкой в профиле"),
                                  self.get_setting("local_badge_description", ""),
                                  _saver("local_badge_description")))
+        root.addView(sec, _lp(-1, -2, None, (0, 0, 0, 16)))
+
+        sec, card = self._section(ctx, pal, _T("Уведомления об истечении"))
+        card.addView(self._switch_row(ctx, pal, _T("Уведомления об истечении"),
+                                      _T("Показывать, когда бейдж скоро истечёт"),
+                                      self.get_setting("expire_notify", True),
+                                      lambda v: self._save_setting("expire_notify", bool(v))))
         root.addView(sec, _lp(-1, -2))
 
     def _chip(self, ctx, pal, text, selected, on_click, size=14):
@@ -2472,17 +2848,24 @@ class UnifiedPlugin(BasePlugin):
         self._mgr_holder = (ctx, pal, holder)
         self._mgr_render(ctx, pal, holder)
 
-        sec, card = self._section(ctx, pal, _T("Резервная копия"))
+        sec, card = self._expander(ctx, pal, _T("Резервная копия"), "backup")
         card.addView(self._row(ctx, pal, _T("Экспорт в буфер обмена"), _T("Все выданные бейджи одним JSON-текстом"),
                                self._export_badges))
         card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
         card.addView(self._row(ctx, pal, _T("Импорт из буфера обмена"), _T("Добавит и обновит бейджи из скопированного JSON"),
                                self._import_badges))
         card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
-        card.addView(self._row(ctx, pal, _T("Журнал изменений"),
+        card.addView(self._row(ctx, pal, _T("Экспорт в файл"), _T("Сохранит JSON в папку Загрузки"),
+                               self._export_to_file))
+        card.addView(self._divider(ctx, pal), _lp(-1, 1, None, (14, 0, 14, 0)))
+        card.addView(self._row(ctx, pal, _T("Импорт из файла"), _T("Загрузит бейджи из JSON в папке Загрузки"),
+                               self._import_from_file))
+        root.addView(sec, _lp(-1, -2, None, (0, 0, 0, 14)))
+        hist = self._card(ctx, pal)
+        hist.addView(self._row(ctx, pal, _T("Журнал изменений"),
                                _T("Записей: %d · можно откатить") % len(self._history),
                                lambda: self._show_page("history"), chevron=True))
-        root.addView(sec, _lp(-1, -2, None, (0, 0, 0, 14)))
+        root.addView(hist, _lp(-1, -2, None, (0, 0, 0, 14)))
 
         if self._custom_badges:
             self._confirm_clear = False
@@ -2592,7 +2975,7 @@ class UnifiedPlugin(BasePlugin):
         desc = a.get("desc") or self._asg_auto()
         col.addView(self._tv(ctx, desc, 13, pal["on_surface_variant"]), _lp(-2, -2, None, (0, 3, 0, 0)))
         kind = TYPE_LABELS.get(a["type"], a["type"])
-        if a["type"] == "custom" and a.get("emoji"):
+        if a["type"] in ("custom", "sparkle") and a.get("emoji"):
             kind += " · " + a["emoji"]
         col.addView(self._tv(ctx, _T("Значок: %s") % kind, 12, pal["primary"]), _lp(-2, -2, None, (0, 4, 0, 0)))
         dur = a.get("dur", "0")
@@ -2621,12 +3004,12 @@ class UnifiedPlugin(BasePlugin):
             kinds = [(k, SUBTYPES[k][0]) for k in SUBTYPES if SUBTYPES[k][2] == a["space"]]
         elif a.get("bulk"):
             sec, card = self._section(ctx, pal, _T("Кому"))
-            card.addView(self._field(ctx, pal, _T("ID или @username, по одному на строку"), a.get("q", ""),
+            card.addView(self._field(ctx, pal, _T("ID, @username или ссылка t.me, по одному на строку"), a.get("q", ""),
                                      lambda t: self._asg.__setitem__("q", t), multiline=True))
             kinds = [(k, SUBTYPES[k][0]) for k in SUBTYPES]
         else:
             sec, card = self._section(ctx, pal, _T("Кому"))
-            card.addView(self._field(ctx, pal, _T("ID или @username"), a.get("q", ""),
+            card.addView(self._field(ctx, pal, _T("ID, @username или ссылка t.me"), a.get("q", ""),
                                      lambda t: self._asg.__setitem__("q", t)))
             kinds = [(k, SUBTYPES[k][0]) for k in SUBTYPES]
         root.addView(sec, _lp(-1, -2, None, (0, 0, 0, 12)))
@@ -2651,6 +3034,9 @@ class UnifiedPlugin(BasePlugin):
         if a["type"] == "custom":
             card.addView(self._field(ctx, pal, _T("ID кастомного эмодзи (document_id)"), a.get("emoji", ""),
                                      lambda t: self._asg.__setitem__("emoji", t), numeric=True))
+        elif a["type"] == "sparkle":
+            card.addView(self._field(ctx, pal, _T("ID эмодзи для галочки (необязательно)"), a.get("emoji", ""),
+                                     lambda t: self._asg.__setitem__("emoji", t), numeric=True))
         card.addView(self._field(ctx, pal, _T("Текст под галочкой в профиле"), a.get("desc", ""), self._asg_set_desc))
         root.addView(sec, _lp(-1, -2, None, (0, 8, 0, 14)))
 
@@ -2667,6 +3053,7 @@ class UnifiedPlugin(BasePlugin):
     def _bulk_tokens(text):
         seen, out = set(), []
         for t in re.split(r"[\s,;]+", str(text or "").strip()):
+            t = _norm_target(t) or t
             if t and t not in seen:
                 seen.add(t)
                 out.append(t)
@@ -2676,13 +3063,17 @@ class UnifiedPlugin(BasePlugin):
         a = self._asg
         tokens = self._bulk_tokens(a.get("q"))
         if not tokens:
-            self._toast(_T("Вставьте ID или @username"), "error")
+            self._toast(_T("Вставьте ID, @username или ссылку t.me"), "error")
             return
         btype = a["type"]
         emoji = str(a.get("emoji") or "").strip()
         if btype == "custom" and not emoji.isdigit():
             self._toast(_T("ID эмодзи - только цифры"), "error")
             return
+        if btype == "sparkle" and emoji and not emoji.isdigit():
+            self._toast(_T("ID эмодзи - только цифры"), "error")
+            return
+        emoji_val = emoji if (btype == "custom" or (btype == "sparkle" and emoji.isdigit())) else None
         changes, bad, done = {}, [], 0
         until_ts = self._asg_until() or 0
         for tok in tokens:
@@ -2711,7 +3102,7 @@ class UnifiedPlugin(BasePlugin):
             desc = self._auto_desc(st, btype) if a.get("desc_auto") else (a.get("desc") or self._auto_desc(st, btype))
             self._custom_badges[key] = {
                 "type": btype,
-                "custom_emoji_id": emoji if btype == "custom" else None,
+                "custom_emoji_id": emoji_val,
                 "description": desc,
                 "name": self._describe(space, oid),
                 "subtype": st,
@@ -2756,8 +3147,9 @@ class UnifiedPlugin(BasePlugin):
             space, oid = a["space"], a["oid"]
         else:
             text = (a.get("q") or "").strip()
+            text = _norm_target(text) or text
             if not text:
-                self._toast(_T("Укажите ID или @username"), "error")
+                self._toast(_T("Укажите ID, @username или ссылку t.me"), "error")
                 return
             if text.startswith("@") or not re.match(r"^-?\d+$", text):
                 space, oid, detected = self._resolve_username(text.lstrip("@").strip())
@@ -2769,18 +3161,24 @@ class UnifiedPlugin(BasePlugin):
                 if SUBTYPES.get(subtype, ("", "", None))[2] != space:
                     subtype = "user" if space == SPACE_USER else "channel"
             else:
-                space = SUBTYPES[subtype][2]
                 value = int(text)
+                if value < 0 and SUBTYPES[subtype][2] != SPACE_CHAT:
+                    subtype = "channel"
+                space = SUBTYPES[subtype][2]
                 oid = abs(value) if space == SPACE_USER else self._normalize_chat_id(value)
         btype = a["type"]
         emoji = str(a.get("emoji") or "").strip()
         if btype == "custom" and not emoji.isdigit():
             self._toast(_T("ID эмодзи - только цифры"), "error")
             return
+        if btype == "sparkle" and emoji and not emoji.isdigit():
+            self._toast(_T("ID эмодзи - только цифры"), "error")
+            return
         a["subtype"] = subtype
         desc = a.get("desc") or self._asg_auto()
         name = a.get("name") or self._describe(space, oid)
-        self._set_badge(space, oid, btype, emoji if btype == "custom" else None, desc, name, subtype,
+        emoji_val = emoji if (btype == "custom" or (btype == "sparkle" and emoji.isdigit())) else None
+        self._set_badge(space, oid, btype, emoji_val, desc, name, subtype,
                         self._asg_until())
         self._show_page("manager")
 
@@ -2984,11 +3382,68 @@ class UnifiedPlugin(BasePlugin):
         except Exception as e:
             self._log(f"after supporters: {e}")
 
+    def _check_expirations(self):
+        if not self.get_setting("expire_notify", True):
+            return
+        try:
+            import json
+            notified = json.loads(self.get_setting("expire_notified", "{}") or "{}")
+            if not isinstance(notified, dict):
+                notified = {}
+        except Exception:
+            notified = {}
+        now = time.time()
+        day = 86400
+        changed = False
+        for k in list(notified.keys()):
+            try:
+                if now - float(notified[k]) > 3 * day:
+                    del notified[k]
+                    changed = True
+            except Exception:
+                del notified[k]
+                changed = True
+        to_notify = []
+        for key, data in list(self._custom_badges.items()):
+            try:
+                until = int(data.get("until") or 0)
+            except Exception:
+                continue
+            if not until:
+                continue
+            remaining = until - now
+            name = data.get("name") or key
+            if remaining <= 0:
+                tag = "exp:" + key
+                if tag not in notified:
+                    to_notify.append((_T("Истёк бейдж у %s") % name, tag))
+            elif remaining <= day:
+                tag = "soon:" + key
+                if tag not in notified:
+                    to_notify.append((_T("Истекает бейдж у %s") % name, tag))
+        for text, tag in to_notify[:5]:
+            notified[tag] = now
+            changed = True
+            try:
+                run_on_ui_thread(lambda t=text: BulletinHelper.show_info(t))
+            except Exception:
+                try:
+                    self._toast(text)
+                except Exception:
+                    pass
+        if changed:
+            try:
+                import json
+                self._save_setting("expire_notified", json.dumps(notified))
+            except Exception:
+                pass
+
     def _start_supporters_loop(self):
         def _loop():
             if self._stop_evt.wait(25):
                 return
             last_fetch = 0.0
+            last_expire_check = 0.0
             while True:
                 try:
                     if time.time() - last_fetch >= SUPPORTERS_REFRESH_SEC:
@@ -2999,6 +3454,9 @@ class UnifiedPlugin(BasePlugin):
                     expired = any(t <= now for t in list(self._timed_active.values()))
                     if live != self._sup_active or expired:
                         run_on_ui_thread(self._after_supporters)
+                    if now - last_expire_check >= 1800:
+                        last_expire_check = now
+                        self._check_expirations()
                 except Exception:
                     pass
                 if self._stop_evt.wait(300):
